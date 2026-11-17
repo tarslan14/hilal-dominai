@@ -666,7 +666,7 @@ let gold=0, selType='sword', squad=1, layout=[];
 let speed=1, paused=false, simT=0, endT=0, winner=-1, headless=false;
 let hp0=[1,1];
 let prog={unlocked:0,stars:[0,0,0,0,0]};
-try{ const s=JSON.parse(localStorage.getItem('hilal_progress')||localStorage.getItem('sancak_progress')); if(s&&Array.isArray(s.stars)) prog=s; }catch(e){}
+try{ const s=JSON.parse(localStorage.getItem('hilal_progress')||localStorage.getItem('sancak_progress')); if(s&&Array.isArray(s.stars)) prog={unlocked:Math.max(0,Math.min(LEVELS.length-1,s.unlocked|0)),stars:s.stars.slice(0,LEVELS.length).map(n=>Math.max(0,Math.min(3,n|0)))}; }catch(e){}
 const save=()=>{ try{localStorage.setItem('hilal_progress',JSON.stringify(prog))}catch(e){} };
 
 /* =====================================================================
