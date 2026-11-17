@@ -1379,7 +1379,11 @@ function spawn(type,team,x,z,hold,st){
 function armOrders(){
   n0=[0,0]; fled=[0,0]; said={}; genDead=[false,false]; for(const u of units) n0[u.team]++;
   let ez=0,n=0,zf=-1e9,zb=1e9; for(const u of units) if(u.team){ ez+=u.z; n++; zf=Math.max(zf,u.z); zb=Math.min(zb,u.z); } ez=n?ez/n:-20;
-  for(const u of units){ if(u.team) u.rank=zf>zb?(zf-u.z)/(zf-zb):0; else if(u.st==='flank'&&!LV.wall) u.way=[(u.x>=0?1:-1)*54,clamp(ez,-40,40)]; }
+  let pz=0,pn=0; for(const u of units) if(!u.team){ pz+=u.z; pn++; } pz=pn?pz/pn:25;
+  for(const u of units){
+    if(u.team){ u.rank=zf>zb?(zf-u.z)/(zf-zb):0;
+      if(S.aggr>=.7&&u.type==='cavalry'&&!u.hold&&!LV.wall) u.way=[(u.x>=0?1:-1)*54,clamp(pz,-40,40)]; }   // a bold enemy sends its horse round your flanks
+    else if(u.st==='flank'&&!LV.wall) u.way=[(u.x>=0?1:-1)*54,clamp(ez,-40,40)]; }
 }
 function clearUnits(){
   for(const u of units) undress(u); for(const m of ordMarks) fxG.remove(m.m);
@@ -1600,6 +1604,7 @@ function drawSoldiers(dt,t){
   for(const u of units){ if(!u.alive||!u.K) continue; const n=u.men, K=u.K; K.body.need+=n; K.arm.need+=n; if(K.mounted){ HB.need+=n; HL.need+=n*4; } else K.leg.need+=n*2; if(u.KL){ u.KL.body.need++; u.KL.arm.need++; } }
   for(const c of corpses){ const K=c.K; K.body.need++; K.arm.need++; if(K.mounted) HB.need++; else K.leg.need+=2; }
   for(const b of batches){ if(b.keep) continue; if(b.need>b.cap) growBatch(b,b.need); b.n=0; }
+  const far=cam.dist>(MOBILE?95:150);                       // zoomed right out: legs are a few pixels, so skip them
   for(const u of units){
     if(!u.alive||!u.K) continue;
     const T=u.T, K0=u.K, men=u.men, cf=Math.cos(u.face), sf=Math.sin(u.face), fight=u.fightT>0, mounted=K0.mounted, cheer=state==='end'&&u.team===winner;
@@ -1625,12 +1630,12 @@ function drawSoldiers(dt,t){
       if(mounted){
         const hy=gy+(mv?Math.abs(Math.sin(w))*.1:0)*k, ci=(u.id+i)&3;
         put(HB,px,hy,pz,c,s,k,0,0,0,mv?Math.sin(w)*.05:0); tint(HB,ci);
-        for(let j=0;j<4;j++){ put(HL,px,hy,pz,c,s,k,LEGQ[j][0],.88,LEGQ[j][1],mv?Math.sin(w+LEGOFF[j])*.75:0); tint(HL,ci); }
+        if(!far) for(let j=0;j<4;j++){ put(HL,px,hy,pz,c,s,k,LEGQ[j][0],.88,LEGQ[j][1],mv?Math.sin(w+LEGOFF[j])*.75:0); tint(HL,ci); }
         put(K.body,px,hy,pz,c,s,k,0,1.5+bob,0,0); put(K.arm,px,hy,pz,c,s,k,.37,2.06+bob,rzp,rx);
       } else {
         const hy=.8+bob, cl=Math.cos(lean), sl=Math.sin(lean), la=mv?Math.sin(w)*.7:0;
         put(K.body,px,gy,pz,c,s,k,0,hy,0,lean); put(K.arm,px,gy,pz,c,s,k,.37,hy+.56*cl-rzp*sl,.56*sl+rzp*cl,lean+rx);
-        put(K.leg,px,gy,pz,c,s,k,.13,.8,0,la); put(K.leg,px,gy,pz,c,s,k,-.13,.8,0,-la);
+        if(!far){ put(K.leg,px,gy,pz,c,s,k,.13,.8,0,la); put(K.leg,px,gy,pz,c,s,k,-.13,.8,0,-la); }
       }
     }
   }

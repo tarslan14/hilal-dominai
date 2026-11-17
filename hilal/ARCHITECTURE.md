@@ -110,12 +110,12 @@ The file layout is unchanged: still one `index.html`, now with `fonts/` beside i
 4. Bump `CACHE` in `sw.js`.
 
 ## 4. Follow-ups
-- **Measure on real phones.** Frame rate could not be measured on a GPU. If it falls short, the next steps are a
-  distance LOD for legs and arms and merging the three banner sprites per regiment into one batch.
+- **Measure on real phones.** Frame rate could not be measured on a GPU. Legs are already skipped when zoomed out; if it still falls
+  short, the next steps are dropping arms at distance and merging the three banner sprites per regiment into one batch.
 - **Balance pass by a human.** Auto-deploy results match the old game per battle, but the feel of morale, charge and
   fatigue numbers needs play-testing. Nicopolis is a little harder than before.
-- **Enemy tactics.** Enemy aggression only delays the rear lines. Flanking moves, reserves and protecting the enemy
-  general are not done.
+- **Enemy tactics.** Enemy aggression delays the rear lines and, from 0.7, sends cavalry round the flanks. Reserves and
+  protecting the enemy general are not done.
 - **Formations and facing.** Regiments cannot change width, and a move order has no drag-to-set facing.
 - **Drag-box selection and control groups** on desktop; a halt button.
 - **Touch deployment drag.** Dragging a placed regiment works with the mouse only; touch uses tap, Remove and re-place.

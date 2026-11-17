@@ -39,6 +39,9 @@ unlock progress, PWA install and the thumb-stick controls are kept. Saved progre
 - **Soldiers are drawn with instancing.** Vienna, the largest battle, draws about 1,300 soldiers in about 175 draw calls
   on desktop; on phones soldiers use a lighter mesh and default to 40 per unit. A governor lowers resolution, then
   shadows, if frames stay slow.
+- **Enemy aggression** delays the enemy's rear lines when low; at 0.7 and above the enemy cavalry rides wide to hit
+  your flanks. The default (0.6) keeps the old straight advance.
+- When the camera is zoomed far out, soldiers are drawn without legs to save work.
 - The camp-fire dusk look is now the "Golden dusk" time of day and stays the default.
 - Stars need 60% (three) or 35% (two) of the army's value left, since routed enemies now leave more survivors.
 - Service worker cache bumped to `hilal-v10`; fonts are precached.
