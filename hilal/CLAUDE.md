@@ -1,6 +1,8 @@
 # HILAL - guide for Claude
 
-3D place-troops-then-auto-battle game with Turkish/Ottoman focus. One `index.html` (game + UI + data) plus a local `three.min.js` (r160). No build step, works from `file://`, installable PWA (`manifest.webmanifest`, `sw.js`).
+3D historical battle game with Turkish/Ottoman focus, in the style of Total War: deploy regiments, then command the battle. One `index.html` (game + UI + data) plus a local `three.min.js` (r160) and vendored fonts in `fonts/`. No build step, works from `file://`, installable PWA (`manifest.webmanifest`, `sw.js`).
+
+Read `ARCHITECTURE.md` for the code map and `CHANGELOG.md` for what changed and what is still open.
 
 ## Run
 - Double-click `index.html`, or `node dev-server.js` -> http://localhost:8765

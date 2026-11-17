@@ -4,7 +4,7 @@ Two browser games, one repo.
 
 | Folder | Game | Stack | Run |
 |---|---|---|---|
-| [`hilal/`](hilal) | **HILAL** - 3D historical auto-battler (Ottoman focus, place troops then watch the battle) | single `index.html` + local `three.min.js`, no build step, installable PWA | open `hilal/index.html`, or `node hilal/dev-server.js` -> http://localhost:8765 |
+| [`hilal/`](hilal) | **HILAL** - 3D historical battle game (Ottoman focus, campaign map, deploy regiments then command the battle) | single `index.html` + local `three.min.js`, no build step, installable PWA | open `hilal/index.html`, or `node hilal/dev-server.js` -> http://localhost:8765 |
 | [`dominai/`](dominai) | **dominAI** - turn-based world-domination strategy on a 3D globe | Vite + TypeScript + Three.js, pure engine in `src/engine`, no backend | `cd dominai && npm install && npm run dev` |
 
 ## Working on it with Claude Code

@@ -49,7 +49,7 @@ button:focus-visible,a:focus-visible,.uc:focus-visible{outline:3px solid #fff;ou
 #adv.flash{animation:flash .9s}
 @keyframes flash{0%,40%{box-shadow:0 0 0 3px #fff,0 6px 18px rgba(0,0,0,.5)}}
 /* strength balance + clock: top-centre */
-#top{top:calc(env(safe-area-inset-top,0px) + 8px);left:50%;transform:translateX(-50%);display:flex;gap:.6em;align-items:center;padding:.4em .7em;max-width:52vw;white-space:nowrap}
+#top{top:calc(env(safe-area-inset-top,0px) + 8px);left:50%;transform:translateX(-50%);display:flex;gap:.6em;align-items:center;padding:.4em .7em;max-width:calc(100vw - 49em);white-space:nowrap}
 #lvl{font-size:.95em}#lvl small{display:block;font-family:var(--serif);font-weight:400;letter-spacing:0;font-size:.85em;color:var(--dim)}
 #bal{display:flex;align-items:center;gap:.45em;font-size:.85em;min-width:0}
 #bal span{overflow:hidden;text-overflow:ellipsis;max-width:13em}
@@ -59,7 +59,7 @@ button:focus-visible,a:focus-visible,.uc:focus-visible{outline:3px solid #fff;ou
 #mA{left:0}#mB{right:0}
 #clock{font-size:.95em;min-width:2.6em;text-align:right}
 /* controls: top-right */
-#ctl{top:calc(env(safe-area-inset-top,0px) + 8px);right:calc(env(safe-area-inset-right,0px) + 8px);display:flex;gap:.35em;flex-wrap:wrap;justify-content:flex-end;max-width:30vw}
+#ctl{top:calc(env(safe-area-inset-top,0px) + 8px);right:calc(env(safe-area-inset-right,0px) + 8px);display:flex;gap:.35em;flex-wrap:wrap;justify-content:flex-end;max-width:23em}
 #ctl .btn{padding:.4em .65em;font-size:calc(12px*var(--ui));white-space:nowrap}
 /* settings */
 #settings{top:calc(env(safe-area-inset-top,0px) + 54px);right:calc(env(safe-area-inset-right,0px) + 8px);width:min(21em,92vw);padding:.8em 1em;max-height:calc(100vh - 70px);overflow:auto;background:var(--paper);z-index:12}
@@ -115,7 +115,7 @@ button:focus-visible,a:focus-visible,.uc:focus-visible{outline:3px solid #fff;ou
 .row{display:flex;gap:5px;justify-content:flex-end;align-items:center;color:#f4e8c8;font-size:12px}
 .row .btn{padding:5px 9px;font-size:12px}
 #info{position:fixed;left:50%;transform:translateX(-50%);background:rgba(20,14,10,.8);color:#f4e8c8;padding:5px 14px;border-radius:14px;font-size:13px;white-space:nowrap;pointer-events:none;z-index:4;bottom:calc(var(--barh,150px) + 6px)}
-#hint{position:fixed;left:12px;top:calc(env(safe-area-inset-top,0px) + 110px);color:#f4e8c8;font-size:12px;line-height:1.6;text-shadow:0 1px 2px #000;background:rgba(20,14,10,.45);padding:8px 10px;border-radius:8px;pointer-events:none;z-index:3}
+#hint{position:fixed;left:12px;top:calc(env(safe-area-inset-top,0px) + 12.5em*var(--ui));color:#f4e8c8;font-size:12px;line-height:1.6;text-shadow:0 1px 2px #000;background:rgba(20,14,10,.45);padding:8px 10px;border-radius:8px;pointer-events:none;z-index:3}
 /* overlays */
 .ov{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(15,10,6,.55);padding:20px;z-index:10}
 #menu .panel{padding:26px 30px;max-width:1080px;width:100%;text-align:center}
@@ -158,7 +158,7 @@ h1+p{margin:4px 0 20px;font-size:18px;font-style:italic;color:var(--dim)}
 #pDesc{margin:.35em 0;font-size:1.08em;line-height:1.3}
 #pMeta{font-size:.95em;line-height:1.35}
 #prov .prow{display:flex;justify-content:space-between;align-items:flex-end;gap:.8em;margin-top:.45em}
-#pStars{font-size:1.4em;color:#b8860b;letter-spacing:.15em}
+#pStars{font-size:1.4em;color:#8a5a00;letter-spacing:.15em}#pStars.none{font-size:.95em;font-style:italic;letter-spacing:0;color:var(--dim)}
 /* thumb sticks + zoom (touch) */
 .stick{position:fixed;bottom:18px;width:104px;height:104px;border-radius:50%;border:2px solid rgba(244,232,200,.5);background:rgba(20,14,10,.38);touch-action:none;z-index:5}
 body.dep .stick{bottom:calc(var(--barh,150px) + 14px)}
@@ -172,16 +172,17 @@ body.dep #zoomB{bottom:calc(var(--barh,150px) + 18px)}
 #bOrder[data-st=hold]{background:#4aa3ff;color:#102030}#bOrder[data-st=flank]{background:#ff9a2a;color:#2a1c10}#bOrder[data-st=guard]{background:#5fd35f;color:#102a10}
 #bRemove.on{background:#c0392b;color:#fff;border-color:#7a1218}
 @media(max-width:1250px){#deploy{flex-direction:column;align-items:stretch}#cards{justify-content:flex-start;overflow-x:auto;padding-top:8px}#side{flex-direction:row;align-items:center;justify-content:flex-end;flex-wrap:wrap}#info{white-space:normal;max-width:90vw;text-align:center}}
+body.dep:not(.touch) #unit,body.dep:not(.touch) #mini{bottom:calc(var(--barh,150px) + 30px)}
 /* touch layout: sticks own the bottom corners, so the stat panel and minimap move up the sides */
 body.touch #unit{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 4.6em);width:min(15.5em,30vw);padding:.3em .45em}
 body.touch #uDesc{display:none}
-body.touch #mini{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 3.4em);width:8em}
+body.touch #mini{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 6.4em);width:8em}
 body.touch #army{max-width:calc(100vw - 290px);left:calc(50% - 16px)}
 @media(max-width:900px),(max-height:560px){
   .hud{font-size:calc(11px*var(--ui))}
   #adv{width:min(17em,30vw);padding:.3em .45em}#adv img{display:none}#adv p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  #top{padding:.25em .5em;max-width:38vw}#lvl small,#bal span{display:none}#balance{width:min(15em,20vw)}
-  #ctl{gap:3px;max-width:34vw}#ctl .btn{padding:4px 6px;font-size:calc(10.5px*var(--ui))}
+  #top{padding:.25em .5em;max-width:calc(100vw - 46em)}#lvl small,#bal span{display:none}#balance{width:min(15em,20vw)}
+  #ctl{gap:3px;max-width:24em}#ctl .btn{padding:4px 6px;font-size:calc(10.5px*var(--ui))}
   #settings{top:calc(env(safe-area-inset-top,0px) + 36px);max-height:calc(100vh - 44px);font-size:12.5px}
   #hint{display:none!important}
   #scout{top:calc(env(safe-area-inset-top,0px) + 40px);right:6px;width:150px;padding:6px 8px;font-size:11px}#scout h4{font-size:11px;margin-bottom:3px}#scout p.tl{font-size:10.5px}
@@ -210,7 +211,10 @@ body.touch #army{max-width:calc(100vw - 290px);left:calc(50% - 16px)}
   #bStart{flex:0 0 auto;position:sticky;right:0;margin-left:auto;font-size:12px;padding:5px 10px;box-shadow:-10px 0 10px rgba(20,14,10,.9)}
   #prov{left:auto;transform:none;right:calc(env(safe-area-inset-right,0px) + 8px);top:calc(env(safe-area-inset-top,0px) + 44px);bottom:calc(env(safe-area-inset-bottom,0px) + 8px);width:min(25em,44vw);overflow:auto;padding:.5em .7em}
 }
-@media(max-width:600px){#scout{width:128px}#top{max-width:34vw}#lvl{display:none}}
+@media(max-width:600px){#scout{width:128px}#lvl{display:none}
+  #top{left:auto;right:6px;transform:none;top:calc(env(safe-area-inset-top,0px) + 6.3em);max-width:62vw}
+  body.touch #mini{top:calc(env(safe-area-inset-top,0px) + 9.4em)}
+  body.touch #army{left:6px;right:6px;transform:none;max-width:none;bottom:118px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -241,7 +245,8 @@ body.touch #army{max-width:calc(100vw - 290px);left:calc(50% - 16px)}
 <div id="settings" class="hud frame hide" role="dialog" aria-label="Settings"></div>
 
 <div id="hint" class="hide">
-  <b>Left-click / drag</b> — place regiments<br>
+  <b>Left-click</b> — place a regiment<br>
+  <b>Drag a regiment</b> — move it<br>
   <b>Right-click</b> — remove a regiment<br>
   <b>Right-drag</b> — rotate camera<br>
   <b>Mouse wheel</b> — zoom<br>
@@ -1206,7 +1211,7 @@ const TOD={
   dusk: {sun:0xffb060,si:4.2,sp:[-95,50,45],  mix:0x1a1424,mk:.55,hs:0x8fa3d6,hi:.95,ex:1.25,fire:1,  fog:1},
   noon: {sun:0xfff3dc,si:3.4,sp:[-40,120,50], mix:0x9cc3ea,mk:.3, hs:0xd8e6ff,hi:1.5, ex:1.05,fire:.12,fog:1.25},
   dawn: {sun:0xffc4a8,si:2.6,sp:[95,34,30],   mix:0xd9c6cc,mk:.6, hs:0xbcc6da,hi:1.25,ex:1.15,fire:.6, fog:.5},
-  night:{sun:0x7f9cff,si:1.2,sp:[-50,95,-55], mix:0x070a16,mk:.85,hs:0x34487c,hi:.5,  ex:1.3, fire:1.6,fog:.8}
+  night:{sun:0x8fa8ff,si:2.0,sp:[-50,95,-55], mix:0x070a16,mk:.85,hs:0x4a62a8,hi:.95, ex:1.35, fire:1.6,fog:.8}
 };
 let todFire=1;
 function applyTOD(){
@@ -1440,8 +1445,8 @@ function mind(u,g){
   u.mor=clamp(u.mor+.2*k,-20,100);
   if(!u.rout&&u.mor<=0){ u.rout=true; u.hold=false; u.way=null; u.ord=null;
     for(const o of units) if(o.alive&&o.team===u.team&&o!==u&&gapTo(o,u)<10) o.mor-=10/k;         // panic spreads
-    if(!headless){ sfx('drum'); if(!u.team) toast('Your '+typeName(u.type)+' have broken and are fleeing the field!','Regiment routing'); } }
-  else if(u.rout&&u.mor>=35&&near>12&&u.hp/u.hp0>.15){ u.rout=false; u.hold=true; u.firm=false; if(!headless&&!u.team) toast('Your '+typeName(u.type)+' have rallied.','Regiment rallied'); }
+    if(!headless){ sfx('drum'); if(!u.team) toast('Your '+(PLURAL[u.type]||typeName(u.type))+' have broken and are fleeing the field!','Regiment routing'); } }
+  else if(u.rout&&u.mor>=35&&near>12&&u.hp/u.hp0>.15){ u.rout=false; u.hold=true; u.firm=false; if(!headless&&!u.team) toast('Your '+(PLURAL[u.type]||typeName(u.type))+' have rallied.','Regiment rallied'); }
 }
 function goal(u,tx,tz){
   const W=LV.wall; if(!W) return [tx,tz];
@@ -1504,12 +1509,12 @@ function melee(u,t,dt){
   const hit=atk/(atk+t.T.def*1.2);
   if(fl>1){ t.mor-=(fl-1)*6*dt/S.morale; t.flT=1; }
   hurtUnit(t,hit*(T.atk+atk)*.8*(60/(60+t.T.arm))*Math.sqrt(NOM*T.size*s)*dt*KM*fl,u);
-  u.fat=Math.min(100,u.fat+dt*2.5);
+  u.fat=Math.min(100,u.fat+dt*1.2);
 }
 function turn(u,want,dt){ let da=want-u.face; da=Math.atan2(Math.sin(da),Math.cos(da)); const m=(u.T.cav?2.6:1.7)*dt; u.face+=clamp(da,-m,m); }
 function march(u,gx,gz,sp,dt){
   const ex=gx-u.x, ez=gz-u.z, ed=Math.hypot(ex,ez)||1, st=Math.min(ed,sp*dt);
-  u.x+=ex/ed*st; u.z+=ez/ed*st; u.moving=true; u.run+=dt; u.fat=Math.min(100,u.fat+dt*(u.T.cav?1.1:1.6)); turn(u,Math.atan2(ex,ez),dt);
+  u.x+=ex/ed*st; u.z+=ez/ed*st; u.moving=true; u.run+=dt; u.fat=Math.min(100,u.fat+dt*(u.T.cav?.7:.9)); turn(u,Math.atan2(ex,ez),dt);
 }
 
 const H=1/60;
@@ -1546,7 +1551,7 @@ function step(dt){
       else { const [gx,gz]=goal(u,o.x,o.z); march(u,gx,gz,sp*(u.fightT>0?.6:1),dt); }
       continue;
     }
-    if(!t){ u.fat=Math.max(0,u.fat-dt*1.5); continue; }
+    if(!t){ u.fat=Math.max(0,u.fat-dt*2); continue; }
     const dx=t.x-u.x, dz=t.z-u.z, d=Math.hypot(dx,dz)||.001, gap=d-u.r-t.r, forced=o&&o.k==='atk';
     if(u.hold&&!forced&&gap<(u.manual?2.5:u.firm?(u.st==='guard'?14:T.ranged?6:8):(T.ranged?T.range-u.r:16))) u.hold=false;
     const reach=T.ranged?T.range*(1+Math.min(.3,u.th*.065)):0, tooClose=T.minRange&&d<T.minRange;
@@ -1561,12 +1566,12 @@ function step(dt){
       else if(T.ranged&&d<=reach&&!tooClose&&(!waiting||gap<reach)){
         if(u.cd<=0){ u.cd=T.vcd*(.9+Math.random()*.2); u.atk=1; volley(u,t,d); }
         u.aimT=.4; acted=true;
-        if(T.kite&&!u.hold&&!t.T.ranged&&gap<8){ u.x-=dx/d*sp*dt; u.z-=dz/d*sp*dt; u.moving=true; u.fat=Math.min(100,u.fat+dt*1.1); turn(u,Math.atan2(-dx,-dz),dt); }   // horse archers skirmish
+        if(T.kite&&!u.hold&&!t.T.ranged&&gap<8){ u.x-=dx/d*sp*dt; u.z-=dz/d*sp*dt; u.moving=true; u.fat=Math.min(100,u.fat+dt*.7); turn(u,Math.atan2(-dx,-dz),dt); }   // horse archers skirmish
         else turn(u,Math.atan2(dx,dz),dt);
       }
       else if(!tooClose&&(!u.hold||forced)&&!waiting){ const [gx,gz]=goal(u,t.x,t.z); march(u,gx,gz,sp,dt); acted=true; }
     }
-    if(!acted||(!u.moving&&u.fightT<=0)) u.fat=Math.max(0,u.fat-dt*1.5);
+    if(!acted||(!u.moving&&u.fightT<=0)) u.fat=Math.max(0,u.fat-dt*2);
     if(!u.moving) u.run=0;
   }
   // separation
@@ -1834,7 +1839,7 @@ function mapSelect(i){
   $('#pName').textContent=L.name+', '+L.year; $('#pSub').textContent=L.date+' · '+L.place; $('#pDesc').textContent=L.intro;
   const m=$('#pMeta'); m.textContent=''; const b1=document.createElement('b'); b1.textContent=L.you; const b2=document.createElement('b'); b2.textContent=L.foe;
   m.append(b1,' under '+L.hero+'  vs  ',b2,' under '+L.foeHero);
-  $('#pStars').textContent=locked?'':st?starStr(st):'Not yet won';
+  $('#pStars').textContent=locked?'':st?starStr(st):'Not yet won'; $('#pStars').classList.toggle('none',!st);
   const go=$('#pGo'); go.disabled=locked; go.textContent=locked?'Locked':'Deploy army';
   adv('Grand Vizier',locked?'The road to '+L.name+' is closed. Win at '+LEVELS[prog.unlocked].name+' first, my Sultan.':L.tip);
 }
@@ -1985,6 +1990,7 @@ function openStory(i){
     +'<p style="font-size:14px"><b>You:</b> '+L.hero+', '+L.you+' &nbsp;·&nbsp; <b>Enemy:</b> '+L.foeHero+', '+L.foe+' &nbsp;·&nbsp; <b>War chest:</b> '+L.gold+' gold</p>';
   setUI();
 }
+const PLURAL={sword:'Swordsmen',spear:'Spearmen',archer:'Archers',cavalry:'Cavalry',shield:'Shield Bearers',crossbow:'Crossbowmen',harcher:'Horse Archers',musket:'Janissaries'};
 function typeName(t,foe){ return t==='siege'?(LV.siege==='cannon'?'Bombard':'Catapult'):t==='hero'?(foe?LV.foeHero:LV.hero):t==='musket'&&foe?'Musketeers':TYPES[t].name; }
 function beginDeploy(){
   state='deploy'; const L=LV;
@@ -2165,6 +2171,7 @@ window.HILAL={
     const saved=JSON.stringify(prog); state='battle'; simT=0; armOrders(); let k=0; while(state==='battle'&&k++<30000) step(H);
     const left=[0,0]; for(const u of units) if(u.alive&&!u.rout) left[u.team]++;
     prog=JSON.parse(saved); save(); headless=false; const r={...lastResult,left0:left[0],left1:left[1],mine:layout.length}; showMap(); return r; },
+  bench(){ const t0=performance.now(); for(let i=0;i<60;i++){ step(H); visuals(H,performance.now()/1000); } return +((performance.now()-t0)/60).toFixed(2); },   // ms of game logic + instance writes per frame
   get state(){ return state; }, get units(){ return units; }, get cam(){ return cam; }, get settings(){ return S; },
   get stats(){ return {verts:Object.fromEntries(Object.entries(KINDS).map(([k,K])=>[k,K.body.g.attributes.position.count+K.arm.g.attributes.position.count+(K.leg?2*K.leg.g.attributes.position.count:HB.g.attributes.position.count+4*HL.g.attributes.position.count)])),calls:renderer.info.render.calls,tris:renderer.info.render.triangles,ms:avgMs,quality,soldiers:units.reduce((n,u)=>n+(u.alive?u.men:0),0)}; }
 };

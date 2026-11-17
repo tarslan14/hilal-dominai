@@ -66,29 +66,60 @@ Pointer events on the canvas (place, rotate, pinch zoom), two thumb sticks, zoom
 
 ## 3. After the rework
 
-The file layout is unchanged: still one `index.html`. Sections, in order:
+The file layout is unchanged: still one `index.html`, now with `fonts/` beside it. Sections, in order:
 
 | Section | What it holds |
 |---|---|
-| `DATA` | `TYPES` (now regiment stats: `atk, def, arm, chg, mhp, rdmg, vsCav`), `LEVELS`, `EXTRA`, `MAPGEO` (campaign map coastlines and node positions). |
-| `SETTINGS` | `S`, `SET_DEF`, load/validate/save in `localStorage['hilal_settings']`, `applySetting()`. |
-| `RENDERER / SCENE` | As before, plus `applyTimeOfDay()` and the auto-quality governor. |
-| `SOLDIER BATCHES` | `Batch` (one `InstancedMesh` per body part and troop kind), `soldierKind()`, `drawSoldiers()`. |
-| `MAPS` | Unchanged apart from tent/sky hooks for time of day. |
-| `UNITS / SIMULATION` | Regiment-level sim: `spawn`, `mind` (morale), `melee`, `volley`, `hurtUnit`, `step`. |
-| `BANNERS / FX` | Banner sprites, instanced arrows, particles and dust. |
-| `CAMPAIGN MAP` | 2D canvas map, nodes, province panel. |
-| `HUD` | Advisor, balance bar and clock, unit cards, stat panel, minimap, settings panel. |
-| `DEPLOYMENT`, `FLOW / UI`, input, main loop | As before, extended with selection and orders. |
+| `DATA` | `TYPES` plus `REG` (regiment stats: `atk, def, arm, chg, mhp, size, rdmg, vcd, vsCav, cav, gen`), `LEVELS`, `EXTRA`, terrain helpers. |
+| `HELPERS / STATE`, `RENDERER / SCENE` | As before. `geo()` has a lite mode for phones. The skeleton builders remain for thumbnails and siege engines. |
+| `MAPS`, `SOUND` | Unchanged; `buildMap` calls `applyTOD()` for sky, fog and light. |
+| `SETTINGS` | `SET` (the ten parameters), `S`, `setValid()` (clamps and whitelists whatever is in storage), `applySetting()`, `TOD`. |
+| `SOLDIER BATCHES` | `mkBatch/growBatch/put` (one `InstancedMesh` per body part), `soldierKind()`, effect batches, banner textures. |
+| `UNITS / SIMULATION` | `spawn`, `shape`, `mind` (morale), `melee`, `volley`/`land`, `hurtUnit`, `step`. |
+| visuals | `drawSoldiers()` writes every soldier and corpse into the batches; `visuals()` does banners, rings, dust, arrows. |
+| `DEPLOYMENT` | `canPlace`, `place`, `autoDeploy`, drag to move. |
+| `CAMPAIGN MAP` | `GEO` (coastlines, rivers, node positions in lon/lat), `drawCampaign()`, `mapSelect()`. |
+| `HUD` | `adv()` advisor, unit cards, stat panel, `orderSelected()`, `drawMini()`, `refreshHUD()`. |
+| `FLOW / UI`, input, main loop | States `map | menu | story | deploy | battle | end`; `battleTap()` turns clicks and taps into selection and orders; `govern()` is the quality governor. |
 
-### Key changes
-- **A unit is now a regiment.** `units[]` entries carry `men`, `max`, `hp`, `mor`, `fat`, `charged`, an optional
-  player order `ord`, and per-soldier position arrays used only for drawing. Enemy `army` rows are grouped into
-  regiments (`round(n/3)`, at least one).
-- **Soldiers are instanced.** `drawSoldiers()` writes every soldier and corpse into a few `InstancedMesh` batches
-  (body and weapon arm per troop kind, legs per team, one horse body and one horse-leg batch). Draw calls no longer
-  grow with the number of soldiers.
-- **States:** `map | menu | story | deploy | battle | end`. The campaign map is the home screen; the old battle list
-  is still reachable from it.
-- **Persistence keys:** `hilal_progress` (unchanged format) and `hilal_settings` (new).
-- **Headless sim** `HILAL.sim(i)` still works and is still the balance check.
+### The regiment model
+- `units[]` entries are regiments: `men/max` (drawn soldiers), `hp/hp0` (strength), `mor`, `fat`, `rout`, `charged`,
+  `ord` (player order: `{k:'move',x,z}` or `{k:'atk',tgt}`), stance (`st`, `hold`, `firm`), footprint `W × D`, radius `r`.
+- The sim counts in **nominal men** (`NOM = 60` for a full infantry block), so the "soldiers per unit" setting changes
+  only what is drawn, never the odds.
+- Enemy `army` rows become `max(1, round(n/3))` regiments.
+- Morale changes in two places: `hurtUnit()` (casualties) and `mind()` (every ~0.5 s: outnumbered, army collapsing,
+  breathing space, general's aura, rout, cascade, rally). `melee()` adds the flank/rear drain and the charge shock.
+- A battle ends when one side has no regiment that is alive and not routing, or after 480 s on remaining strength.
+
+### Rendering
+- Soldiers: per troop kind a `body` and a weapon-`arm` batch; legs per colour; one tinted horse-body and one horse-leg
+  batch for all cavalry. `put()` writes a yaw + pitch-about-a-pivot matrix straight into the instance buffer.
+- Per-soldier state is three `Float32Array`s (`px, pz, py`) and a yaw array; soldiers ease toward their formation slot.
+- Banners are sprites (banner, strip background, strip fill). Arrows, shot, debris and dust are instanced too.
+- `HILAL.stats` reports draw calls, triangles and soldier count; `HILAL.bench()` times sim plus instance writes.
+
+### Persistence
+- `hilal_progress` — unchanged format `{unlocked, stars[]}`.
+- `hilal_settings` — the ten settings; validated on load.
+
+### Checks before shipping
+1. `node dev-server.js`, open the game, no console errors.
+2. `HILAL.sim(i)` for `i = 0..9` after any balance change.
+3. Layout at 1280×720 and 844×390.
+4. Bump `CACHE` in `sw.js`.
+
+## 4. Follow-ups
+- **Measure on real phones.** Frame rate could not be measured on a GPU. If it falls short, the next steps are a
+  distance LOD for legs and arms and merging the three banner sprites per regiment into one batch.
+- **Balance pass by a human.** Auto-deploy results match the old game per battle, but the feel of morale, charge and
+  fatigue numbers needs play-testing. Nicopolis is a little harder than before.
+- **Enemy tactics.** Enemy aggression only delays the rear lines. Flanking moves, reserves and protecting the enemy
+  general are not done.
+- **Formations and facing.** Regiments cannot change width, and a move order has no drag-to-set facing.
+- **Drag-box selection and control groups** on desktop; a halt button.
+- **Touch deployment drag.** Dragging a placed regiment works with the mouse only; touch uses tap, Remove and re-place.
+- **Campaign map.** Coastlines are hand-drawn and coarse; nodes are not reachable by keyboard (the battle list is).
+- **Portrait phones.** Usable, but the layout is tuned for landscape.
+- **Siege battles.** Walls and breaches work as before; there are no ladders, towers or gate fights.
+- **Old names.** Icon files still say "sancak".
