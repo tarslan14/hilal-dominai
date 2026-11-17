@@ -1,0 +1,15 @@
+{
+  "name": "HILAL — Ten Battles That Shaped an Empire",
+  "short_name": "HILAL",
+  "description": "A historical strategy battle simulator: ten Seljuk and Ottoman battles, 1071–1683.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#1b1612",
+  "theme_color": "#1b1612",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

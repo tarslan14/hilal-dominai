@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>HILAL — Ten Battles That Shaped an Empire</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1b1612">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#1b1612;font-family:Georgia,'Times New Roman',serif;color:#2a1c10;user-select:none}
+canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+body{overscroll-behavior:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.hide{display:none!important}
+#boot{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#e9d9b0;font-size:20px;text-align:center;padding:30px;z-index:50;background:#1b1612}
+.panel{background:linear-gradient(#f4e8c8,#e6d3a3);border:3px solid #6b1d1d;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.55)}
+button{font-family:inherit;cursor:pointer}
+.btn{background:#8c1c22;color:#fbf1d6;border:2px solid #4d0e12;border-radius:7px;padding:9px 16px;font-size:15px;font-weight:bold;letter-spacing:.5px}
+.btn:hover{background:#a8262d}
+.btn.alt{background:#e9d9b0;color:#4d0e12}
+.btn.alt:hover{background:#fff3cf}
+.btn.big{font-size:19px;padding:12px 26px}
+.btn.on{background:#d9a520;color:#2a1c10}
+/* top bar */
+#top{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;gap:14px;padding:8px 12px;background:linear-gradient(rgba(20,14,10,.85),rgba(20,14,10,0));color:#f4e8c8;pointer-events:none}
+#top>*{pointer-events:auto}
+#lvl{font-size:17px;font-weight:bold;white-space:nowrap;text-shadow:0 1px 3px #000}
+#lvl small{display:block;font-weight:normal;font-size:12px;opacity:.85}
+#bars{flex:1;min-width:0;display:flex;align-items:center;gap:8px;justify-content:center;font-size:13px;text-shadow:0 1px 2px #000}
+.bar{flex:1;min-width:40px;max-width:320px;height:16px;background:rgba(0,0,0,.55);border:1px solid #000;border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:100%;transition:width .25s}
+#barA i{background:#d12a3a;margin-left:auto}
+#ctl{display:flex;gap:6px;flex-shrink:0;margin-left:auto}#ctl .btn{white-space:nowrap}#bars span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ctl .btn{padding:6px 10px;font-size:13px}
+/* scout report */
+#scout{position:fixed;top:64px;right:12px;width:200px;padding:10px 12px;font-size:13px}
+#scout h4{margin:0 0 6px;font-size:14px;color:#6b1d1d;border-bottom:1px solid #b99;padding-bottom:4px}
+#scout div{display:flex;justify-content:space-between;padding:1px 0}
+#scout p{margin:8px 0 0;font-size:12px;font-style:italic;color:#5b3a1a}
+/* deploy bar */
+#deploy{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:stretch;padding:8px 10px;background:linear-gradient(rgba(20,14,10,0),rgba(20,14,10,.9) 35%)}
+#cards{display:flex;gap:6px;flex:1;justify-content:center;flex-wrap:nowrap}
+.card{position:relative;width:98px;padding:4px 4px 6px;background:#f1e3bd;border:2px solid #7a5a2a;border-radius:8px;text-align:center;font-size:12px;color:#2a1c10}
+.card img{width:64px;height:64px;display:block;margin:0 auto;border-radius:6px}
+.card b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card span{color:#7a4a00;font-weight:bold}
+.card kbd{position:absolute;top:3px;left:5px;font-size:10px;font-family:inherit;color:#7a5a2a}
+.card.sel{border-color:#c21f30;background:#fff6d8;box-shadow:0 0 0 3px #c21f30,0 0 14px #ffb347;transform:translateY(-5px)}
+.card.off{filter:grayscale(1);opacity:.55}
+#side{display:flex;flex-direction:column;gap:6px;justify-content:flex-end;min-width:232px}
+#gold{font-size:20px;font-weight:bold;color:#ffd866;text-shadow:0 1px 3px #000;text-align:right}
+#gold small{font-size:12px;color:#f4e8c8;font-weight:normal;display:block}
+.row{display:flex;gap:5px;justify-content:flex-end;align-items:center;color:#f4e8c8;font-size:12px}
+.row .btn{padding:5px 9px;font-size:12px}
+#info{position:fixed;left:50%;bottom:190px;transform:translateX(-50%);background:rgba(20,14,10,.8);color:#f4e8c8;padding:5px 14px;border-radius:14px;font-size:13px;white-space:nowrap;pointer-events:none}
+#hint{position:fixed;left:12px;top:64px;color:#f4e8c8;font-size:12px;line-height:1.6;text-shadow:0 1px 2px #000;background:rgba(20,14,10,.45);padding:8px 10px;border-radius:8px;pointer-events:none}
+/* overlays */
+.ov{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(15,10,6,.55);padding:20px;z-index:10}
+#menu .panel{padding:26px 30px;max-width:1080px;width:100%;text-align:center}
+h1{margin:0;font-size:54px;letter-spacing:10px;color:#7a1218}
+h1+p{margin:4px 0 20px;font-size:17px;font-style:italic;color:#5b3a1a}
+#levels{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.lv{width:186px;padding:12px 10px;background:#fbf1d6;border:2px solid #7a5a2a;border-radius:9px;color:#2a1c10;transition:transform .12s}
+.lv:hover{transform:translateY(-4px);border-color:#c21f30}
+.lv.locked{opacity:.5;filter:grayscale(.8);cursor:not-allowed}
+.lv.locked:hover{transform:none;border-color:#7a5a2a}
+.lv .num{font-size:26px;color:#8c1c22;font-weight:bold}
+.lv .nm{font-size:16px;font-weight:bold;margin:2px 0}
+.lv .yr{font-size:13px;color:#7a4a00}
+.lv .vs{font-size:12px;margin:8px 0;line-height:1.35}
+.lv .st{font-size:18px;color:#c98a00}
+#menu footer{margin-top:16px;font-size:12px;color:#5b3a1a}
+#menu footer a{color:#7a1218;cursor:pointer;text-decoration:underline}
+#story .panel,#end .panel{padding:26px 34px;max-width:680px;width:100%}
+#story h2,#end h2{margin:0;font-size:30px;color:#7a1218}
+#story h3{margin:2px 0 14px;font-size:15px;font-weight:normal;font-style:italic;color:#7a4a00}
+#story p,#end p{font-size:16px;line-height:1.55;margin:0 0 12px}
+.tip{background:rgba(140,28,34,.1);border-left:4px solid #8c1c22;padding:8px 12px;font-size:14px!important}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+#end .stars{font-size:44px;color:#d9a520;text-align:center;margin:6px 0 10px;letter-spacing:8px}
+#end h2.lose{color:#333}
+#vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 52%,rgba(8,4,2,.62) 100%)}
+#story .panel,#menu .panel,#end .panel{max-height:95vh;overflow:auto}
+.facts{background:rgba(90,60,20,.1);border-radius:8px;padding:8px 14px;margin:0 0 12px;font-size:14px;line-height:1.45}
+.facts ul{margin:4px 0 0;padding-left:20px}.facts li{margin-bottom:3px}
+.new{background:rgba(217,165,32,.25);border:1px solid #b8860b;border-radius:8px;padding:8px 12px;font-size:14px!important}
+.card{flex:0 0 96px}
+@media(max-width:1250px){#deploy{flex-direction:column;align-items:stretch}#cards{justify-content:flex-start;overflow-x:auto;padding-top:8px}#side{flex-direction:row;align-items:center;justify-content:flex-end;flex-wrap:wrap}#info{bottom:230px;white-space:normal;max-width:90vw}}
+.tool.on{background:#d9a520;color:#2a1c10}
+@media(max-width:600px){body #info{bottom:212px!important;white-space:normal;text-align:center;width:88vw}#scout{width:128px}#hint{max-width:52vw}}
+@media(max-width:900px),(max-height:560px){
+  #top{padding:4px 6px;gap:6px}#lvl{font-size:13px}#lvl small{display:none}
+  #ctl{gap:3px}#ctl .btn{padding:4px 7px;font-size:11px}#bars span{display:none}.bar{height:11px}
+  #hint{top:40px;left:6px;font-size:10.5px;line-height:1.45;padding:5px 7px;max-width:46vw}
+  #scout{top:40px;right:6px;width:150px;padding:6px 8px;font-size:11px}#scout h4{font-size:11.5px;margin-bottom:3px}#scout p{display:none}
+  #deploy{padding:3px 5px;gap:3px}#cards{gap:4px;padding-top:6px}
+  .card{flex:0 0 66px;padding:2px 2px 3px;border-radius:6px}.card img{width:38px;height:38px}.card b,.card span{font-size:9.5px}.card kbd{display:none}
+  .card.sel{transform:translateY(-3px)}
+  #side{gap:4px;min-width:0}#gold{font-size:14px}#gold small{font-size:10px;display:inline;margin-left:5px}
+  .row{font-size:10px;gap:3px}.row .btn{padding:4px 7px;font-size:11px}.btn.big{font-size:13px;padding:6px 12px}
+  #info{bottom:132px!important;font-size:11px;padding:3px 10px}
+  .ov{padding:6px}#menu .panel{padding:12px}h1{font-size:30px;letter-spacing:5px}h1+p{font-size:13px;margin-bottom:10px}
+  #levels{gap:6px}.lv{width:118px;padding:6px 4px}.lv .num{font-size:17px}.lv .nm{font-size:12.5px}.lv .yr{font-size:11px}.lv .vs{font-size:10px;margin:3px 0}.lv .st{font-size:14px}
+  #story .panel,#end .panel{padding:14px 16px}#story h2,#end h2{font-size:21px}#story h3{font-size:12px;margin-bottom:8px}
+  #story p,#end p{font-size:13.5px;line-height:1.45;margin-bottom:8px}.facts,.new,.tip{font-size:12px!important}
+  #end .stars{font-size:30px;margin:2px 0 6px}.acts{margin-top:8px}
+}
+#pad{position:fixed;left:8px;top:50%;transform:translateY(-50%);display:grid;grid-template-columns:repeat(3,40px);gap:3px;touch-action:none}
+#pad button{height:40px;border-radius:9px;border:1px solid rgba(244,232,200,.45);background:rgba(20,14,10,.58);color:#f4e8c8;font-size:17px;padding:0;line-height:1;touch-action:none}
+#pad button:active{background:rgba(217,165,32,.85);color:#2a1c10}
+#pad button.on{background:#d9a520;color:#2a1c10;box-shadow:0 0 10px #ffb347}
+@media(max-width:900px),(max-height:560px){#hint{display:none!important}#pad{left:5px;grid-template-columns:repeat(3,34px);gap:2px}#pad button{height:34px;font-size:15px}}
+.stick{position:fixed;bottom:18px;width:104px;height:104px;border-radius:50%;border:2px solid rgba(244,232,200,.5);background:rgba(20,14,10,.38);touch-action:none;z-index:5}
+body.dep .stick{bottom:calc(var(--barh,150px) + 14px)}
+#stickL{left:12px}#stickR{right:12px}
+.stick i{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px;border-radius:50%;background:rgba(244,232,200,.8);box-shadow:0 2px 6px rgba(0,0,0,.5);pointer-events:none}
+.stick span{position:absolute;left:0;right:0;top:-17px;text-align:center;font-size:10px;letter-spacing:2px;color:#f4e8c8;text-shadow:0 1px 2px #000;pointer-events:none}
+#zoomB{position:fixed;right:124px;bottom:22px;display:flex;flex-direction:column;gap:4px;z-index:5}
+body.dep #zoomB{bottom:calc(var(--barh,150px) + 18px)}
+#zoomB button{width:40px;height:40px;border-radius:9px;border:1px solid rgba(244,232,200,.45);background:rgba(20,14,10,.58);color:#f4e8c8;font-size:20px;padding:0;touch-action:none}
+#zoomB button:active{background:rgba(217,165,32,.85);color:#2a1c10}
+body #info{bottom:calc(var(--barh,150px) + 6px)!important}
+.ord.on{background:#d9a520;color:#2a1c10}.ord[data-st=hold].on{background:#4aa3ff}.ord[data-st=flank].on{background:#ff9a2a}.ord[data-st=guard].on{background:#5fd35f}
+.tips{background:rgba(140,28,34,.1);border-left:4px solid #8c1c22;border-radius:6px;padding:8px 12px;margin:0 0 12px;font-size:14px;line-height:1.45}
+.tips ul{margin:4px 0 0;padding-left:18px}.tips li{margin-bottom:3px}
+.trow{display:flex;gap:12px;margin:6px 0 4px}.trow div{text-align:center;font-size:12px;font-weight:bold}.trow img{width:54px;height:54px;border-radius:6px;display:block;margin:0 auto 2px;border:1px solid #7a5a2a}
+#scout h4{cursor:pointer}#scout p.tl{font-style:normal;margin:3px 0 0;font-size:11.5px;line-height:1.3;color:#3a2a14}
+#scout.col>*:not(:first-child){display:none!important}
+@media(max-width:900px),(max-height:560px){.stick{width:88px;height:88px}.stick i{width:38px;height:38px;margin:-19px}#stickL{left:6px}#stickR{right:6px}#zoomB{right:102px}#zoomB button{width:34px;height:34px;font-size:17px}
+  .trow img{width:42px;height:42px}.tips{font-size:12.5px}#scout p.tl{display:block;font-size:10.5px}}
+/* phone in landscape: one slim row of cards + one scrolling row of controls */
+@media(max-height:560px){
+  #deploy{padding:2px 4px 3px;gap:2px}
+  #cards{gap:3px;padding-top:4px}
+  .card{flex:0 0 58px;padding:1px 1px 2px;border-width:1px}.card img{width:30px;height:30px}.card b,.card span{font-size:9px;line-height:1.15}
+  #side{flex-wrap:nowrap!important;overflow-x:auto;justify-content:flex-start!important;gap:6px;scrollbar-width:none}
+  #side::-webkit-scrollbar{display:none}
+  #side .row{flex:0 0 auto;font-size:0;gap:2px}
+  #side .row .btn{font-size:10.5px;padding:4px 6px}
+  #gold{flex:0 0 auto;font-size:13px;text-align:left}#gold small{display:none}
+  #bStart{flex:0 0 auto;position:sticky;right:0;margin-left:auto;font-size:12px;padding:5px 10px;box-shadow:-10px 0 10px rgba(20,14,10,.9)}
+}
+.bar{position:relative}.bar u{position:absolute;left:0;bottom:0;height:4px;width:100%;background:#ffd866;transition:width .3s}#barA u{left:auto;right:0}
+#toast{position:fixed;left:50%;top:54px;transform:translateX(-50%);background:rgba(20,14,10,.85);color:#ffd866;border:1px solid #b8860b;padding:7px 18px;border-radius:18px;font-size:16px;font-weight:bold;z-index:8;pointer-events:none;text-align:center;max-width:90vw}
+@media(max-width:900px),(max-height:560px){#toast{top:38px;font-size:12.5px;padding:4px 12px}}
+#bOrder[data-st=hold]{background:#4aa3ff;color:#102030}#bOrder[data-st=flank]{background:#ff9a2a;color:#2a1c10}#bOrder[data-st=guard]{background:#5fd35f;color:#102a10}
+#bRemove.on{background:#c0392b;color:#fff;border-color:#7a1218}
+</style>
+</head>
+<body>
+<div id="boot">Loading the battlefield…</div>
+<canvas id="c"></canvas>
+<div id="vig"></div>
+
+<div id="top" class="hide">
+  <div id="lvl"></div>
+  <div id="bars">
+    <span id="nA"></span><div class="bar" id="barA"><i></i><u></u></div>
+    <b>⚔</b>
+    <div class="bar" id="barB"><i></i><u></u></div><span id="nB"></span>
+  </div>
+  <div id="ctl">
+    <button class="btn alt" id="bPause" title="Space">Pause</button>
+    <button class="btn alt" id="bSpeed">Speed 1×</button>
+    <button class="btn alt" id="bSound">Sound on</button>
+    <button class="btn alt" id="bRetry">Redeploy</button>
+    <button class="btn alt" id="bMenu">Menu</button>
+  </div>
+</div>
+
+<div id="hint" class="hide">
+  <b>Left-click / drag</b> — place troops<br>
+  <b>Right-click</b> — remove a troop<br>
+  <b>Right-drag</b> — rotate camera<br>
+  <b>Mouse wheel</b> — zoom<br>
+  <b>W A S D</b> — move camera<br>
+  <b>1 – 9, 0</b> — choose troop type
+</div>
+<div id="scout" class="panel hide"></div>
+<div id="info" class="hide"></div>
+<div id="toast" class="hide"></div>
+<div id="stickL" class="stick hide"><i></i><span>MOVE</span></div>
+<div id="stickR" class="stick hide"><i></i><span>LOOK</span></div>
+<div id="zoomB" class="hide"><button data-k="ZoomIn" title="Zoom in">+</button><button data-k="ZoomOut" title="Zoom out">−</button></div>
+
+<div id="deploy" class="hide">
+  <div id="cards"></div>
+  <div id="side">
+    <div id="gold"></div>
+    <div class="row">
+      <button class="btn alt" id="bSquad" title="How many troops each tap places">Squad ×1</button>
+      <button class="btn alt" id="bOrder" data-st="charge" title="The order new troops receive. Tap a placed troop to give it this order.">Order: Charge</button>
+      <button class="btn alt" id="bRemove" title="Switch on, then tap troops to take them back">Remove</button>
+      <button class="btn alt" id="bAuto" title="Let your vizier arrange a balanced army">Auto-deploy</button>
+      <button class="btn alt hide" id="bClear">Remove all</button>
+    </div>
+    <button class="btn big" id="bStart">⚔ START BATTLE</button>
+  </div>
+</div>
+
+<div id="menu" class="ov hide">
+  <div class="panel">
+    <h1>HILAL</h1>
+    <p>Ten battles that shaped an empire · 1071 – 1683</p>
+    <div id="levels"></div>
+    <footer>Place your troops, then watch the battle unfold. Win a battle to unlock the next. &nbsp;·&nbsp;
+      <a id="aInstall" class="hide"><b>⬇ Install app</b></a><span id="iosTip" class="hide">iPhone: tap Share, then "Add to Home Screen"</span> &nbsp;·&nbsp;
+      <a id="aUnlock">Unlock all battles</a> &nbsp;·&nbsp; <a id="aReset">Reset progress</a></footer>
+  </div>
+</div>
+
+<div id="story" class="ov hide">
+  <div class="panel">
+    <h2 id="sT"></h2><h3 id="sS"></h3>
+    <div id="sB"></div>
+    <div class="acts">
+      <button class="btn alt" id="sBack">Back</button>
+      <button class="btn big" id="sGo">Deploy your army</button>
+    </div>
+  </div>
+</div>
+
+<div id="end" class="ov hide">
+  <div class="panel">
+    <h2 id="eT"></h2>
+    <div class="stars" id="eStars"></div>
+    <div id="eB"></div>
+    <div class="acts">
+      <button class="btn alt" id="eMenu">Menu</button>
+      <button class="btn alt" id="eRetry">Redeploy &amp; retry</button>
+      <button class="btn big" id="eNext">Next battle</button>
+    </div>
+  </div>
+</div>
+
+<script src="three.min.js"></script>
+<script type="module">
+
+
+/* =====================================================================
+   DATA
+   ===================================================================== */
+const TYPES = {
+  sword:   {name:'Swordsman',    cost:60,  hp:100, dmg:18, range:1.9, cd:0.9, speed:5.0, radius:0.55, swing:1.8, rest:-0.35,
+            desc:'Reliable infantry. Bonus damage against spearmen.'},
+  spear:   {name:'Spearman',     cost:70,  hp:90,  dmg:15, range:2.6, cd:1.0, speed:4.6, radius:0.55, swing:0.7, rest:-0.25,
+            desc:'Long reach. Deals ×2.5 damage to cavalry and ignores their charge.'},
+  archer:  {name:'Archer',       cost:90,  hp:55,  dmg:15, range:26,  cd:1.8, speed:4.8, radius:0.55, swing:0.25, rest:-1.45, ranged:'arrow',
+            desc:'Fast long-range volleys. Weak in melee and against shields.'},
+  cavalry: {name:'Cavalry',      cost:160, hp:190, dmg:28, range:2.4, cd:1.1, speed:10,  radius:0.9,  swing:0.6, rest:-0.3,
+            desc:'Fast. Devastating charge, hunts archers. Dies on spears.'},
+  shield:  {name:'Shield Bearer',cost:90,  hp:220, dmg:9,  range:1.8, cd:1.1, speed:3.8, radius:0.6,  swing:1.5, rest:-0.3,
+            desc:'Very tough. Blocks most arrow damage. Low attack.'},
+  crossbow:{name:'Crossbowman',  cost:120, hp:60,  dmg:40, range:22,  cd:3.2, speed:4.2, radius:0.55, swing:0.2, rest:-1.45, ranged:'bolt',
+            desc:'Slow but heavy bolts that punch through armour and shields.'},
+  siege:   {name:'Catapult',     cost:300, hp:160, dmg:55, range:48,  minRange:9, cd:5.5, speed:2.0, radius:1.4, swing:-1.8, rest:-0.4, ranged:'stone', splash:4.2,
+            desc:'Huge range, area damage. Cannot hit enemies that are too close.'},
+  hero:    {name:'Commander',    cost:400, hp:1100,dmg:60, range:2.4, cd:0.8, speed:6.0, radius:0.75, swing:1.8, rest:-0.35, limit:1,
+            desc:'Your leader (max 1). Mighty fighter; nearby allies deal +20% damage.'}
+};
+TYPES.harcher={name:'Horse Archer',cost:150,hp:110,dmg:13,range:20,cd:1.6,speed:9,radius:0.9,swing:0.25,rest:-1.45,ranged:'arrow',kite:true,
+  desc:'The Turkish speciality: shoots from the saddle and rides away from enemy infantry.'};
+TYPES.musket={name:'Janissary',cost:140,hp:70,dmg:60,range:24,cd:4.2,speed:4.2,radius:0.55,swing:0.2,rest:-1.45,ranged:'ball',from:1444,
+  desc:'Firearm infantry. Slow to reload, but a hit is deadly and armour barely helps.'};
+TYPES.crossbow.from=1176;
+const ORDER = ['sword','spear','archer','harcher','cavalry','shield','crossbow','musket','siege','hero'];
+const MOVE = 0.7;                       // global march speed
+const avail = t => !(TYPES[t].from > LV.yr);
+const ZONE = {x0:-56, x1:56, z0:12, z1:42};
+const FIELD = {hx:60, hz:45};
+const PLAYER = {main:0xc21f30, accent:0xf3efe2};
+
+const LEVELS = [
+ { name:'Manzikert', title:'The Battle of Manzikert', yr:1071, year:'1071', date:'26 August 1071', place:'Eastern Anatolia, north of Lake Van',
+   you:'Seljuk Sultanate', foe:'Byzantine Empire', hero:'Alp Arslan', foeHero:'Romanos IV',
+   gold:2200, foeMain:0x4b2a8f, foeAccent:0xd9b23c, map:'steppe', siege:'catapult', seed:11,
+   theme:{ground:0xb89b5e, sky:0xe9d6a8, sun:0xfff0cc},
+   story:[
+    'For centuries the Byzantine Empire has ruled Anatolia. Now Emperor Romanos IV Diogenes marches east with a great army to drive the Seljuk Turks out for good.',
+    'Near the fortress of Manzikert, Sultan Alp Arslan is waiting. Tradition says he dressed in white that morning — so that the robe could serve as his shroud if he fell.',
+    'Your army is smaller, but the Byzantine line is slow and heavy. Choose your ground and your troops well.'],
+   unlock:'<b>Horse Archers</b> — the heart of every Turkish army of this age. They shoot from the saddle and ride away from infantry that tries to catch them.',
+   facts:[
+    'About half of the Byzantine army never fought: one detachment marched away before the battle and some Turkic mercenaries changed sides.',
+    'Seljuk horse archers kept riding out of reach while shooting, pulled the Byzantine line apart, and then closed around its centre.',
+    'Romanos was treated with respect and released after about a week. Back home he was overthrown and blinded by his rivals.',
+    'Within ten years Turkish rulers held large parts of Anatolia. In 1077 they made Nicaea, close to Constantinople itself, their capital.'],
+   tip:'Basics: spearmen stop cavalry, cavalry rides down archers, archers wear down slow infantry. Keep archers behind a front line.',
+   win:'History agrees with you. The Seljuks wore the Byzantine line down, surrounded its centre and captured the emperor himself. The gates of Anatolia stood open to the Turks.',
+   lose:'In history Alp Arslan won this day and captured the emperor — the road into Anatolia was opened. Rearrange your lines and try again.',
+   army:[{t:'sword',n:5,x:0,z:-16,cols:5},{t:'spear',n:2,x:-15,z:-16,cols:2},{t:'spear',n:2,x:15,z:-16,cols:2},
+         {t:'archer',n:3,x:0,z:-25,cols:3},{t:'cavalry',n:2,x:-32,z:-18,cols:2},{t:'hero',n:1,x:0,z:-21,cols:1}] },
+
+ { name:'Myriokephalon', title:'The Battle of Myriokephalon', yr:1176, year:'1176', date:'17 September 1176', place:'The Tzibritze pass, in the mountains west of Konya',
+   you:'Sultanate of Rum', foe:'Byzantine Empire', hero:'Kilij Arslan II', foeHero:'Manuel I',
+   gold:3100, foeMain:0x4b2a8f, foeAccent:0xd9b23c, map:'pass', siege:'catapult', seed:17,
+   theme:{ground:0x9c8f6c, sky:0xd9cfb8, sun:0xfff0d8},
+   story:[
+    'A hundred years after Manzikert, the Byzantines try one last time to win Anatolia back. Emperor Manuel I Komnenos marches on the Seljuk capital, Konya, with a huge army and a long train of siege engines.',
+    'Sultan Kilij Arslan II does not wait behind his walls. He hides his men on the slopes of a narrow pass and lets the long Byzantine column walk in.',
+    'The enemy is strung out in a deep column: guards in front, the emperor and the baggage far behind.'],
+   unlock:'<b>Crossbowmen</b> — slow to reload, but their bolts punch through armour and shields.',
+   facts:[
+    'The Byzantine army was said to be so large that it stretched for ten miles on the march — in the pass, its parts could not help each other.',
+    'Most of the Byzantine army actually survived — but the siege engines were destroyed, so Konya could no longer be attacked.',
+    'Emperor Manuel himself compared the defeat to Manzikert in a letter after the battle.',
+    'The Byzantines never again tried to reconquer the Anatolian plateau. From now on it was Turkish land.'],
+   tip:'The enemy comes in a deep, narrow column. Horse archers on both sides can shoot into it while your spears and shields hold the middle.',
+   win:'As in history: the ambush broke the column, the siege train was lost and Manuel had to accept peace. The Byzantines never again tried to take back the heart of Anatolia.',
+   lose:'In history the ambush worked — the siege train was destroyed and the emperor asked for peace. Try hitting the column from both sides.',
+   army:[{t:'shield',n:4,x:0,z:-11,cols:4},{t:'sword',n:6,x:0,z:-16,cols:3},{t:'spear',n:4,x:0,z:-24,cols:2},
+         {t:'crossbow',n:3,x:0,z:-30,cols:3},{t:'cavalry',n:3,x:0,z:-34,cols:3},{t:'siege',n:1,x:0,z:-41,cols:1},{t:'hero',n:1,x:0,z:-37.5,cols:1}] },
+
+ { name:'Kosovo', title:'The Battle of Kosovo', yr:1389, year:'1389', date:'15 June 1389', place:'Kosovo Polje — the Field of Blackbirds',
+   you:'Ottoman Sultanate', foe:'Serbian Coalition', hero:'Murad I', foeHero:'Prince Lazar',
+   gold:2800, foeMain:0x2b4f9e, foeAccent:0xe8e8e8, map:'field', siege:'catapult', seed:23,
+   theme:{ground:0x5f8a3c, sky:0xbfd9ee, sun:0xffffff},
+   story:[
+    'A new Turkish power has risen in the west of Anatolia: the Ottomans. They have crossed into Europe and are pushing deep into the Balkans.',
+    'On the Field of Blackbirds, Prince Lazar of Serbia has gathered a coalition of Serbian and Bosnian lords to stop them. At the centre of his line stand armoured knights — heavy cavalry that can smash through anything that is not ready for them.',
+    'Sultan Murad I commands in person, with his sons Bayezid and Yakub leading the wings.'],
+   facts:[
+    'Murad I is the only Ottoman sultan who died on a battlefield.',
+    'His son Bayezid took command at once — and had his own brother Yakub killed so that nobody could challenge him for the throne.',
+    'Both armies were so badly mauled that for a time nobody was sure who had won.',
+    'The battle became the centre of Serbian epic poetry and is still remembered every year on St Vitus\' Day.'],
+   tip:'The enemy centre is heavy cavalry. A wall of spearmen in the middle will break their charge — then your own horsemen can strike the flanks.',
+   win:'The real battle was a bloodbath for both sides and both leaders died: Prince Lazar lost his life — by most accounts captured and beheaded — and Sultan Murad was killed — by tradition, by the knight Miloš Obilić. Murad\'s son Bayezid took command, and Ottoman power in the Balkans lasted for centuries.',
+   lose:'The real battle cost both sides their leaders, but the Ottomans could replace their losses and Serbia could not. Brace your centre against the knights and try again.',
+   army:[{t:'cavalry',n:5,x:0,z:-15,cols:5},{t:'sword',n:4,x:-19,z:-16,cols:4},{t:'sword',n:4,x:19,z:-16,cols:4},
+         {t:'spear',n:3,x:-32,z:-17,cols:3},{t:'spear',n:3,x:32,z:-17,cols:3},
+         {t:'archer',n:3,x:-14,z:-27,cols:3},{t:'archer',n:3,x:14,z:-27,cols:3},{t:'hero',n:1,x:0,z:-24,cols:1}] },
+
+ { name:'Nicopolis', title:'The Crusade of Nicopolis', yr:1396, year:'1396', date:'25 September 1396', place:'Nicopolis, on the Danube',
+   you:'Ottoman Sultanate', foe:'Crusader Army', hero:'Bayezid I', foeHero:'Sigismund',
+   gold:2700, foeMain:0xd9d9d9, foeAccent:0xb01020, map:'danube', siege:'catapult', seed:29,
+   theme:{ground:0x64903f, sky:0xc6dcec, sun:0xffffff},
+   story:[
+    'Europe answers the Ottoman advance with a crusade. King Sigismund of Hungary leads it, joined by the proudest knights of France and Burgundy, and together they besiege the Ottoman fortress of Nicopolis on the Danube.',
+    'Sultan Bayezid I — called Yıldırım, "the Thunderbolt", for the speed of his marches — drops everything and races to the rescue.',
+    'The French knights refuse to wait for anyone. They want the honour of the first charge.'],
+   facts:[
+    'Nicopolis was one of the last great crusades of the Middle Ages.',
+    'King Sigismund of Hungary wanted his Wallachian foot soldiers to attack first. The French knights refused and charged alone, uphill.',
+    'They broke the first Ottoman lines — then ran into rows of sharpened stakes, lost their horses and met Bayezid\'s fresh reserve at the top of the hill.',
+    'The young Burgundian leader, John of Nevers, was captured. He and the other noble prisoners were ransomed for 200,000 gold florins.'],
+   tip:'The knights charge first and alone, far ahead of their infantry. Destroy them on your spears before the rest of the army arrives.',
+   win:'Exactly as it happened: the knights charged without support, were cut off and overwhelmed. Sigismund escaped down the Danube by boat. No crusade threatened the Ottomans in the Balkans again for almost fifty years.',
+   lose:'In history the knights\' reckless charge ended in disaster on the Ottoman stakes. Put more spears where the knights will land.',
+   army:[{t:'cavalry',n:7,x:0,z:-10,cols:7},{t:'sword',n:8,x:0,z:-26,cols:8},{t:'spear',n:2,x:-22,z:-26,cols:2},{t:'spear',n:2,x:22,z:-26,cols:2},
+         {t:'crossbow',n:4,x:0,z:-33,cols:4},{t:'archer',n:3,x:-16,z:-33,cols:3},{t:'hero',n:1,x:0,z:-30,cols:1}] },
+
+ { name:'Varna', title:'The Battle of Varna', yr:1444, year:'1444', date:'10 November 1444', place:'Varna, on the Black Sea coast',
+   you:'Ottoman Sultanate', foe:'Crusade of Varna', hero:'Murad II', foeHero:'Władysław III',
+   gold:4600, foeMain:0x1d6b6b, foeAccent:0xf0f0f0, map:'coast', siege:'catapult', seed:31,
+   theme:{ground:0x6b8f48, sky:0xb9cfdc, sun:0xf4f8ff},
+   story:[
+    'Sultan Murad II has retired and left the throne to his twelve-year-old son, Mehmed. Europe sees its chance: a new crusade under the young King Władysław III of Poland and Hungary and the famous general John Hunyadi marches to the Black Sea.',
+    'Murad returns from retirement to lead the army himself. He catches the crusaders with their backs to the sea at Varna.',
+    'At the centre of your line stand the janissaries — and some of them now carry a new weapon.'],
+   unlock:'<b>Janissaries with handguns</b> — firearms reach your battlefield. Historians date the first janissary guns to around these years. Very slow to reload, but a hit is deadly.',
+   facts:[
+    'Legend says young Mehmed wrote to his father: "If you are the Sultan, come and lead your armies. If I am the Sultan, I order you to come and lead my armies."',
+    'The crusade broke a peace treaty signed only months earlier. Tradition says the Ottomans carried the torn treaty into battle on a lance.',
+    'King Władysław, aged twenty, charged the janissaries around the Sultan with his bodyguard and was never seen again; his body was not found. In Poland he is still called "Władysław of Varna".',
+    'The janissaries were the Sultan\'s permanent, paid infantry — one of the first standing armies in Europe since Roman times.'],
+   tip:'Your new janissaries hit hard but reload slowly. Protect them with shield bearers and let the enemy come to you.',
+   win:'As in history: when the king fell, the crusader army broke. Hunyadi got away from the field. Nine years later Murad\'s son would use the peace this victory bought to take Constantinople.',
+   lose:'In history the death of the young king decided the day for the Ottomans. Shield your janissaries and try again.',
+   army:[{t:'cavalry',n:2,x:-22,z:-14,cols:2},{t:'cavalry',n:2,x:22,z:-14,cols:2},{t:'shield',n:4,x:0,z:-14,cols:4},{t:'sword',n:6,x:0,z:-19,cols:6},
+         {t:'spear',n:3,x:-34,z:-18,cols:3},{t:'spear',n:3,x:34,z:-18,cols:3},{t:'crossbow',n:4,x:0,z:-27,cols:4},
+         {t:'siege',n:1,x:0,z:-37,cols:1},{t:'hero',n:1,x:0,z:-23,cols:1}] },
+
+ { name:'Constantinople', title:'The Conquest of Constantinople', yr:1453, year:'1453', date:'6 April – 29 May 1453', place:'The Theodosian Walls',
+   you:'Ottoman Empire', foe:'Byzantine Empire', hero:'Mehmed II', foeHero:'Constantine XI',
+   gold:3600, foeMain:0x4b2a8f, foeAccent:0xd9b23c, map:'siege', siege:'cannon', seed:37,
+   theme:{ground:0x8d8a55, sky:0xf0cfa6, sun:0xffe2b8},
+   wall:{z:-10, gaps:[{x:-30,w:11},{x:0,w:11},{x:30,w:11}]},
+   story:[
+    'Constantinople — the "Red Apple". Its great land walls have turned back every army for a thousand years.',
+    'Sultan Mehmed II is 21 years old. He has brought giant bronze bombards cast by the engineer Orban, and had his ships dragged overland into the Golden Horn. Emperor Constantine XI defends with a small garrison and Genoese soldiers under Giovanni Giustiniani.',
+    'After weeks of bombardment the walls are breached in three places. The defenders are waiting in the gaps.'],
+   unlock:'<b>Bombards</b> replace your catapults — gunpowder artillery that can bring down what no army could climb.',
+   facts:[
+    'Orban\'s great bombard was over eight metres long. Sixty oxen and hundreds of men dragged it to the city, and it took about three hours to reload.',
+    'To get past the great chain across the harbour, Mehmed had his ships dragged overland on greased logs into the Golden Horn on 22 April.',
+    'Roughly seven thousand defenders faced an army perhaps ten times their size.',
+    'Mehmed made the city his capital and invited Greeks, Armenians, Jews and Turks to repopulate it.'],
+   tip:'Defenders hold their positions until you come close. Your bombards outrange everything — let them soften the breaches before the infantry goes in.',
+   win:'On 29 May 1453, after a 53-day siege, the Ottomans broke through. Constantine XI is said to have died in the last fighting, though his body was never identified. Mehmed became "Fatih" — the Conqueror — and the city became the capital of his empire. Many historians mark this day as the end of the Middle Ages.',
+   lose:'The walls held today — but in history Mehmed kept attacking for 53 days until they fell. Bring bombards and shields, and assault the breaches again.',
+   army:[{t:'shield',n:3,x:-30,z:-10,cols:3,hold:1},{t:'shield',n:3,x:0,z:-10,cols:3,hold:1},{t:'shield',n:3,x:30,z:-10,cols:3,hold:1},
+         {t:'sword',n:3,x:-30,z:-16,cols:3,hold:1},{t:'sword',n:3,x:0,z:-16,cols:3,hold:1},{t:'sword',n:3,x:30,z:-16,cols:3,hold:1},
+         {t:'archer',n:4,x:-15,z:-15,cols:4,hold:1},{t:'archer',n:4,x:15,z:-15,cols:4,hold:1},
+         {t:'crossbow',n:3,x:-45,z:-15,cols:3,hold:1},{t:'crossbow',n:3,x:45,z:-15,cols:3,hold:1},
+         {t:'spear',n:4,x:0,z:-21,cols:4,hold:1},{t:'hero',n:1,x:0,z:-25,cols:1,hold:1}] },
+
+ { name:'Chaldiran', title:'The Battle of Chaldiran', yr:1514, year:'1514', date:'23 August 1514', place:'The plain of Chaldiran, eastern Anatolia',
+   you:'Ottoman Empire', foe:'Safavid Persia', hero:'Selim I', foeHero:'Shah Ismail',
+   gold:4000, foeMain:0x33334a, foeAccent:0xc02020, map:'highland', siege:'cannon', seed:43,
+   theme:{ground:0xa39a5c, sky:0xcfdde6, sun:0xffffff},
+   story:[
+    'A new rival has risen in the east: Shah Ismail, founder of the Safavid dynasty of Persia, whose Qizilbash horsemen have never lost a battle and believe their Shah cannot be beaten.',
+    'Sultan Selim I — "the Grim" — marches his army more than a thousand kilometres across Anatolia to meet him.',
+    'Ismail\'s army is almost all cavalry and has no firearms at all. Yours has cannons, chained wagons and thousands of janissary muskets.'],
+   facts:[
+    'The Ottomans fought from behind a barrier of wagons and cannons that the Persian horsemen could not ride through.',
+    'The Safavids had almost no firearms. Their cavalry charged again and again into gunfire.',
+    'Shah Ismail was wounded and nearly captured. It is said he never led an army in battle again.',
+    'After the defeat the Safavids built their own corps of musketeers and artillery, and eastern Anatolia became Ottoman.'],
+   tip:'Almost the whole enemy army is cavalry and horse archers. Spears in front, and as many janissaries and bombards as you can afford behind.',
+   win:'As in history: gunpowder beat the finest cavalry in Asia. The Ottomans briefly took the Safavid capital, Tabriz, and eastern Anatolia became Ottoman.',
+   lose:'In history the Persian charges were shot to pieces by Ottoman guns. Build a firing line behind your spears and try again.',
+   army:[{t:'cavalry',n:5,x:-14,z:-13,cols:5},{t:'cavalry',n:5,x:14,z:-13,cols:5},{t:'harcher',n:3,x:-40,z:-16,cols:3},{t:'harcher',n:3,x:40,z:-16,cols:3},
+         {t:'sword',n:6,x:0,z:-22,cols:6},{t:'spear',n:4,x:0,z:-26,cols:4},{t:'archer',n:4,x:0,z:-31,cols:4},{t:'hero',n:1,x:0,z:-18,cols:1}] },
+
+ { name:'Ridaniya', title:'The Battle of Ridaniya', yr:1517, year:'1517', date:'22 January 1517', place:'Ridaniya, outside Cairo',
+   you:'Ottoman Empire', foe:'Mamluk Sultanate', hero:'Selim I', foeHero:'Tumanbay II',
+   gold:4000, foeMain:0x146b3a, foeAccent:0xe6c34a, map:'desert', siege:'cannon', seed:47,
+   theme:{ground:0xcfae6a, sky:0xf0dcae, sun:0xfff0cc},
+   story:[
+    'After Chaldiran, Selim turns south against the Mamluks — the warrior-sultans who have ruled Egypt and Syria for 250 years. He has already beaten them once, in Syria, and crossed the Sinai desert in the middle of winter.',
+    'The last Mamluk sultan, Tumanbay II, makes his stand at Ridaniya, in front of Cairo. He has dug trenches and — for the first time — bought cannons of his own, fixed in place and pointing at the road.',
+    'Behind the guns wait the Mamluk horsemen, among the finest cavalry in the world.'],
+   facts:[
+    'The Mamluks began as slave-soldiers and ruled Egypt from 1250. They were the army that had stopped the Mongols at Ain Jalut in 1260.',
+    'Tumanbay tried to match the Ottoman guns with cannons of his own, bought in haste. The Ottomans had far more — and far more practice.',
+    'While the main Ottoman army faced the trenches, a column crossed the Mokattam hills and struck the Mamluk line in the flank.',
+    'With Egypt came the holy cities of Mecca and Medina. From now on the Ottoman sultans were the protectors of the Muslim holy places.'],
+   tip:'The enemy guns hold their ground and outrange your archers. Either race in fast with cavalry and horse archers, or out-shoot them with your own bombards.',
+   win:'As in history: the Mamluk line was turned and broken, although the Grand Vizier Sinan Pasha fell in the fighting. Cairo was taken days later, and Egypt stayed Ottoman for almost three hundred years.',
+   lose:'In history an Ottoman column went around the Mamluk trenches instead of marching into them. Silence the cannons first, then deal with the horsemen.',
+   army:[{t:'siege',n:3,x:0,z:-30,cols:3,hold:1},{t:'cavalry',n:4,x:-20,z:-14,cols:4},{t:'cavalry',n:4,x:20,z:-14,cols:4},
+         {t:'harcher',n:2,x:-42,z:-16,cols:2},{t:'harcher',n:2,x:42,z:-16,cols:2},{t:'sword',n:6,x:0,z:-18,cols:6},
+         {t:'spear',n:4,x:0,z:-22,cols:4},{t:'archer',n:4,x:0,z:-26,cols:4},{t:'hero',n:1,x:0,z:-34,cols:1}] },
+
+ { name:'Mohács', title:'The Battle of Mohács', yr:1526, year:'1526', date:'29 August 1526', place:'The marshy plain of Mohács, by the Danube',
+   you:'Ottoman Empire', foe:'Kingdom of Hungary', hero:'Suleiman I', foeHero:'Louis II',
+   gold:4000, foeMain:0x2f7d3b, foeAccent:0xf0f0f0, map:'marsh', siege:'cannon', seed:41,
+   theme:{ground:0x54703c, sky:0xb0babd, sun:0xe8eef2, fogNear:90, fogFar:320},
+   story:[
+    'Sultan Suleiman the Magnificent marches on Hungary with the largest army in Europe.',
+    'On a rain-soaked plain beside the Danube, young King Louis II decides not to wait for reinforcements. His plan is simple: one great charge of armoured knights, straight at the Ottoman centre.',
+    'Your janissaries and guns are ready. Let them come.'],
+   facts:[
+    'The Hungarians had 25,000–30,000 men against at least 45,000 Ottomans, and still attacked first.',
+    'The Hungarian charge pushed too far forward and ran into janissary muskets and cannons firing from prepared positions.',
+    'King Louis II was twenty years old. He drowned in a stream in his heavy armour while fleeing.',
+    'Hungarians still say "More was lost at Mohács" when something goes wrong.'],
+   tip:'Two waves of knights will hit your centre fast. Spearmen and shield bearers in front, janissaries behind — and watch for the enemy guns at the back.',
+   win:'Exactly so. The Hungarian knights broke through the first lines — and rode straight into the janissaries\' muskets and chained cannons. The Hungarian army collapsed within about two hours. King Louis drowned in a stream while fleeing, and Hungary was divided for the next 150 years.',
+   lose:'In history the knights\' charge was shattered by disciplined gunfire in about two hours. Deepen your centre and try again.',
+   army:[{t:'cavalry',n:4,x:-11,z:-13,cols:4},{t:'cavalry',n:4,x:11,z:-13,cols:4},{t:'sword',n:8,x:0,z:-22,cols:8},
+         {t:'spear',n:3,x:-28,z:-18,cols:3},{t:'spear',n:3,x:28,z:-18,cols:3},
+         {t:'crossbow',n:2,x:-17,z:-29,cols:2},{t:'musket',n:2,x:17,z:-29,cols:2},
+         {t:'siege',n:1,x:-8,z:-37,cols:1},{t:'siege',n:1,x:8,z:-37,cols:1},{t:'hero',n:1,x:0,z:-28,cols:1}] },
+
+ { name:'Vienna', title:'The Siege of Vienna', yr:1683, year:'1683', date:'12 September 1683', place:'Before the walls of Vienna',
+   you:'Ottoman Empire', foe:'Holy League', hero:'Kara Mustafa', foeHero:'Jan III Sobieski',
+   gold:4500, foeMain:0xd8b820, foeAccent:0x222222, map:'vienna', siege:'cannon', seed:59,
+   theme:{ground:0x6a8f45, sky:0xcfe0ea, sun:0xffffff},
+   story:[
+    'For two months Grand Vizier Kara Mustafa Pasha has besieged Vienna. The walls are crumbling and the city is starving.',
+    'But a relief army has appeared on the Kahlenberg heights behind you: Germans, Austrians — and King Jan III Sobieski of Poland with his winged hussars, the most feared heavy cavalry in Europe.',
+    'In history, this is the day the Ottoman advance into Europe ended. Can you rewrite it?'],
+   facts:[
+    'The siege lasted from 14 July to 12 September 1683. Ottoman miners dug tunnels to blow up the walls from below.',
+    'The winged hussars wore tall wooden frames of feathers on their backs and carried lances over five metres long.',
+    'Kara Mustafa was executed on the Sultan\'s order in Belgrade on 25 December 1683.',
+    'Legend says Vienna\'s first coffee houses were opened with sacks of coffee beans left behind in the Ottoman camp.',
+    'The war that followed ended with the Treaty of Karlowitz in 1699 — the first time the Ottoman Empire gave up large territories.'],
+   tip:'The hardest battle. Three wings of hussars will charge at once — you need a lot of spearmen, on the flanks too. Do not waste gold on your own cavalry.',
+   win:'You have done what Kara Mustafa could not. In history Sobieski led one of the largest cavalry charges ever seen — some 18,000 horsemen — straight through the Ottoman camp, and the siege collapsed in a single afternoon. Today, the story ends differently.',
+   lose:'As in history: Sobieski\'s hussars poured down from the Kahlenberg in one of the largest cavalry charges ever seen, and the siege was broken in an afternoon. Try again — with more spears.',
+   army:[{t:'cavalry',n:5,x:-26,z:-14,cols:5},{t:'cavalry',n:5,x:0,z:-12,cols:5},{t:'cavalry',n:5,x:26,z:-14,cols:5},
+         {t:'spear',n:4,x:-42,z:-20,cols:4},{t:'spear',n:4,x:42,z:-20,cols:4},{t:'sword',n:8,x:0,z:-23,cols:8},
+         {t:'musket',n:3,x:-14,z:-30,cols:3},{t:'musket',n:3,x:14,z:-30,cols:3},
+         {t:'siege',n:1,x:0,z:-38,cols:1},{t:'hero',n:1,x:0,z:-31,cols:1}] }
+];
+
+/* Short briefing, tips and terrain for every battle.
+   Terrain: circles {k,x,z,r} or rectangles {k,x0,x1,z0,z1}. Hills also carry a height h. */
+const EXTRA = {
+ 'Manzikert': { intro:'Emperor Romanos IV marches east to drive the Seljuk Turks out of Anatolia. Sultan Alp Arslan meets him near Manzikert with a faster, lighter army.',
+   troops:['harcher','archer','spear'],
+   tips:['Two hills stand at the front of your camp. Archers on a hill shoot further.','The Byzantine line is slow, heavy infantry — horse archers can shoot it and ride away.','Their few cavalry come down your left: keep some spearmen there.'],
+   terrain:[{k:'hill',x:-34,z:18,r:15,h:4.5},{k:'hill',x:34,z:18,r:15,h:4.5},{k:'hill',x:0,z:-32,r:12,h:3}] },
+ 'Myriokephalon': { intro:'A century later Emperor Manuel I marches on Konya. Sultan Kilij Arslan II ambushes his long column inside a mountain pass.',
+   troops:['shield','crossbow','archer'],
+   tips:['Cliffs block both sides: the enemy can only come out of the pass mouth in front of you.','Put archers and crossbows on the two slopes, and block the mouth with shields and spears.','Flank orders do not work here — there is no way around.'],
+   wall:{z:-14,t:18,cliff:true,gaps:[{x:0,w:40}]},
+   terrain:[{k:'hill',x:-40,z:22,r:15,h:6},{k:'hill',x:40,z:22,r:15,h:6}] },
+ 'Kosovo': { intro:'The Ottomans push into the Balkans. Prince Lazar of Serbia blocks the way, with armoured knights at the centre of his line.',
+   troops:['spear','archer','sword'],
+   tips:['The centre is open ground — that is where the knights will charge. Meet them with spearmen.','Woods on both flanks stop cavalry charges. Infantry is safe there; your own horsemen are not.','A low rise in your camp is a good place for archers.'],
+   terrain:[{k:'forest',x:-40,z:0,r:12},{k:'forest',x:40,z:0,r:12},{k:'hill',x:0,z:28,r:16,h:3.5}] },
+ 'Nicopolis': { intro:'A great crusade besieges Nicopolis on the Danube. Sultan Bayezid "the Thunderbolt" takes the hilltop and waits for the French knights to charge.',
+   troops:['spear','archer','cavalry'],
+   tips:['You hold a big hill, and rows of stakes guard its foot. Knights that ride into the stakes are slowed and wounded.','Stand spearmen just behind the stakes and archers higher up the slope.','Give your cavalry the Flank order to strike the infantry that follows the knights.'],
+   terrain:[{k:'hill',x:0,z:30,r:34,h:7},{k:'stakes',x0:-30,x1:30,z0:5,z1:9.5},{k:'forest',x:-45,z:-6,r:11}] },
+ 'Varna': { intro:'A new crusade under young King Władysław III reaches the Black Sea. Murad II returns from retirement and traps it against the shore at Varna.',
+   troops:['musket','shield','spear'],
+   tips:['The marsh by the lake on your left slows everyone: you need few troops there.','The hill on the right flank is high ground for your new janissaries and crossbows.','Set janissaries to Hold behind shield bearers so they keep firing.'],
+   terrain:[{k:'marsh',x0:-60,x1:-38,z0:-30,z1:12},{k:'hill',x:40,z:0,r:16,h:5}] },
+ 'Constantinople': { intro:'Mehmed II, 21 years old, has battered the thousand-year-old walls of Constantinople for weeks. Three breaches are open — and defended.',
+   troops:['siege','shield','sword'],
+   tips:['The walls can only be crossed at the three breaches, and a moat slows your men in front of them.','Bombards outrange everything. Put them on the hill in your camp and let them work first.','Send shield bearers into the breaches ahead of your swordsmen.'],
+   terrain:[{k:'marsh',x0:-60,x1:60,z0:-6.5,z1:-4},{k:'hill',x:0,z:34,r:13,h:4}] },
+ 'Chaldiran': { intro:'Shah Ismail of Persia is believed unbeatable by his followers, and his army is almost all cavalry. Selim I marches across Anatolia with cannons and janissaries.',
+   troops:['musket','siege','spear'],
+   tips:['Rocky ground and a small grove lie between the armies. Troops crossing them are slowed and cavalry cannot charge there.','The lanes between the rocks stay open — that is where the Persian horsemen will come through. Block them with spearmen.','Put janissaries and bombards on the hill in your camp, set to Hold, to shoot over your line.'],
+   terrain:[{k:'rocks',x:-27,z:3,r:9},{k:'rocks',x:27,z:1,r:9},{k:'forest',x:0,z:-3,r:6},{k:'rocks',x:-50,z:-6,r:6},{k:'hill',x:0,z:34,r:15,h:4},{k:'hill',x:-42,z:-24,r:14,h:4}] },
+ 'Ridaniya': { intro:'Selim turns on the Mamluks of Egypt. Sultan Tumanbay waits before Cairo behind trenches and fixed cannons.',
+   troops:['harcher','cavalry','siege'],
+   tips:['The Mamluk guns sit behind a trench in the centre and cannot move. Do not march straight at them.','Send cavalry and horse archers around the sides with the Flank order — the hill on the right gives cover.','Your own bombards can duel theirs from the dune on your left.'],
+   terrain:[{k:'trench',x0:-28,x1:28,z0:-13,z1:-10},{k:'hill',x:46,z:-6,r:17,h:6},{k:'hill',x:-44,z:22,r:13,h:3.5}] },
+ 'Mohács': { intro:'Suleiman the Magnificent invades Hungary. On a marshy plain by the Danube, King Louis II stakes everything on one charge of armoured knights.',
+   troops:['musket','spear','shield'],
+   tips:['Patches of marsh break up the field: knights lose their charge in the mud.','Deploy behind a marsh so the charge reaches you slow and scattered.','Janissaries on the ridge in your camp, spearmen in front of them.'],
+   terrain:[{k:'marsh',x:-26,z:-1,r:9},{k:'marsh',x:22,z:2,r:8},{k:'marsh',x:0,z:-8,r:6},{k:'marsh',x:-46,z:8,r:7},{k:'marsh',x:44,z:-12,r:8},{k:'hill',x:0,z:32,r:18,h:3.5}] },
+ 'Vienna': { intro:'After a two-month siege Vienna is about to fall — until King Jan Sobieski and his winged hussars appear on the heights above your camp.',
+   troops:['spear','musket','shield'],
+   tips:['The enemy charges downhill from the Kahlenberg: troops on higher ground hit harder.','Vineyards in the middle of the field stop cavalry charges. Fight among them, not in the open.','You need many spearmen, on the flanks too. Do not buy cavalry.'],
+   terrain:[{k:'hill',x:0,z:-38,r:32,h:7},{k:'vines',x:-30,z:2,r:11},{k:'vines',x:30,z:2,r:11},{k:'vines',x:0,z:4,r:8}] }
+};
+for (const L of LEVELS){ Object.assign(L, EXTRA[L.name] || {}); L.foeStyle=(L.name==='Chaldiran'||L.name==='Ridaniya')?'east':'west'; }
+const TINFO = { hill:'<b>Hills</b> — archers and guns reach further; climbing is slow', forest:'<b>Forest</b> — slows troops, stops cavalry charges, shelters from arrows',
+  vines:'<b>Vineyards</b> — slow troops and stop cavalry charges', marsh:'<b>Marsh / water</b> — everyone wades slowly', trench:'<b>Trenches</b> — slow to cross',
+  rocks:'<b>Rocky ground</b> — slows troops and stops cavalry charges', stakes:'<b>Stakes</b> — enemy cavalry is slowed and wounded', wagons:'<b>Chained wagons</b> — enemy cavalry cannot charge through' };
+const inT = (t,x,z) => t.r ? ((x-t.x)*(x-t.x)+(z-t.z)*(z-t.z) < t.r*t.r) : (x>=t.x0&&x<=t.x1&&z>=t.z0&&z<=t.z1);
+// water and built-up areas of each map (x0,x1,z0,z1): the ground is kept low / level there
+const WATER={ siege:[[88,560,-460,460]], marsh:[[82,154,-460,460]], danube:[[-460,460,-212,-90]], coast:[[88,580,-460,460],[-302,-98,-172,92]], desert:[[118,182,-460,460]] };
+const FLATS={ siege:[[-200,200,-140,-3]], vienna:[[-200,200,62,170]], steppe:[[-95,-45,-135,-100]], danube:[[60,116,-104,-60]], desert:[[-70,70,-150,-60],[-200,40,-270,-180]] };
+function rectK(r,x,z,m){ const dx=Math.max(r[0]-x,0,x-r[1]), dz=Math.max(r[2]-z,0,z-r[3]); return clamp(1-Math.hypot(dx,dz)/m,0,1); }
+function shapeK(t,x,z,m){ return t.r?clamp(1-(Math.hypot(x-t.x,z-t.z)-t.r)/m,0,1):rectK([t.x0,t.x1,t.z0,t.z1],x,z,m); }
+function wetAt(x,z){ let w=0; for(const r of WATER[LV.map]||[]) w=Math.max(w,rectK(r,x,z,10)); return w; }
+function N(x,z){ const s=LV.seed||1; return Math.sin(x*.045+s)*Math.cos(z*.052+s*1.7)*.55+Math.sin(x*.11+z*.07+s*.3)*.28+Math.sin(x*.023-z*.031+s*2.1)*.5+Math.sin(x*.27+s)*Math.sin(z*.23-s)*.12; }
+function HH(x,z){ let h=0; const hs=LV.hillsC; if(hs) for(const t of hs){ const d=Math.hypot(x-t.x,z-t.z)/t.r; if(d<1){ const k=1-d; h+=t.h*k*k*(3-2*k); } } return h; }   // battle hills only
+function HT(x,z){                                                   // full ground height
+  const L=LV, ex=Math.max(0,Math.abs(x)-FIELD.hx,Math.abs(z)-FIELD.hz);
+  let fl=0; for(const r of FLATS[L.map]||[]) fl=Math.max(fl,rectK(r,x,z,14));
+  const wet=wetAt(x,z); let h=N(x,z)*(.55+Math.min(1,ex/45)*3.4)*(1-fl)*(1-wet)-wet*1.3;
+  for(const t of L.terrain||[]){ if(t.k!=='marsh'&&t.k!=='trench') continue; const k=shapeK(t,x,z,2.5); if(k>0) h=h*(1-k)-k*(t.k==='trench'?.9:.5); }
+  return h+HH(x,z);
+}
+function terr(u){
+  let slow=1, nc=false, cov=false, stk=false; const cav=u.type==='cavalry'||u.type==='harcher';
+  for(const t of LV.terrain||[]){ if(t.k==='hill'||!inT(t,u.x,u.z)) continue;
+    if(t.k==='forest'||t.k==='vines'||t.k==='rocks'){ slow=Math.min(slow,cav?.45:.72); nc=true; if(t.k==='forest') cov=true; }
+    else if(t.k==='marsh'||t.k==='trench'){ slow=Math.min(slow,cav?.4:.55); nc=true; }
+    else if(u.team===1){ slow=Math.min(slow,cav?.35:.75); nc=true; if(t.k==='stakes'&&cav) stk=true; } }
+  u.ts=slow; u.tnc=nc; u.tcov=cov; u.tstk=stk; u.th=HH(u.x,u.z);
+}
+
+/* =====================================================================
+   HELPERS / STATE
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const rnd = (a=1,b) => b===undefined ? Math.random()*a : a+Math.random()*(b-a);
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+let state='menu', cur=0, LV=LEVELS[0];
+let units=[], corpses=[], projs=[], parts=[];
+let gold=0, selType='sword', squad=1, layout=[];
+let speed=1, paused=false, simT=0, endT=0, winner=-1, headless=false;
+let hp0=[1,1];
+let prog={unlocked:0,stars:[0,0,0,0,0]};
+try{ const s=JSON.parse(localStorage.getItem('hilal_progress')||localStorage.getItem('sancak_progress')); if(s&&Array.isArray(s.stars)) prog=s; }catch(e){}
+const save=()=>{ try{localStorage.setItem('hilal_progress',JSON.stringify(prog))}catch(e){} };
+
+/* =====================================================================
+   RENDERER / SCENE
+   ===================================================================== */
+const canvas=$('#c');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+const MOBILE=matchMedia('(pointer:coarse)').matches;
+renderer.setPixelRatio(Math.min(devicePixelRatio,MOBILE?1.5:2));
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(45,1,0.5,1200);
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.25;
+const hemi=new THREE.HemisphereLight(0x8fa3d6,0x3a2f24,0.95); scene.add(hemi);
+const fires=[];
+const sun=new THREE.DirectionalLight(0xffb060,4.2); sun.position.set(-95,50,45); sun.castShadow=true;
+sun.shadow.mapSize.set(MOBILE?1024:2048,MOBILE?1024:2048);
+Object.assign(sun.shadow.camera,{left:-85,right:85,top:85,bottom:-85,near:1,far:300}); sun.shadow.bias=-0.0006;
+scene.add(sun);
+const world=new THREE.Group(), unitsG=new THREE.Group(), fxG=new THREE.Group();
+scene.add(world,unitsG,fxG);
+
+const cam={tx:0,tz:4,yaw:0,pitch:0.9,dist:88};
+function camApply(){
+  const cp=Math.cos(cam.pitch);
+  camera.position.set(cam.tx+Math.sin(cam.yaw)*cp*cam.dist, Math.sin(cam.pitch)*cam.dist, cam.tz+Math.cos(cam.yaw)*cp*cam.dist);
+  camera.lookAt(cam.tx,0,cam.tz);
+}
+function resize(){ const w=innerWidth,h=innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); const dp=document.querySelector('#deploy'); if(dp&&dp.offsetHeight) document.body.style.setProperty('--barh',dp.offsetHeight+'px'); }
+addEventListener('resize',resize);
+
+/* shared geometry + materials for units */
+const BOX=new THREE.BoxGeometry(1,1,1);
+const CYL=new THREE.CylinderGeometry(1,1,1,12);
+const SPH=new THREE.SphereGeometry(1,10,8);
+const lam=c=>new THREE.MeshLambertMaterial({color:c});
+const M={skin:lam(0xe0b088),steel:lam(0xb8bcc4),wood:lam(0x7a5230),dark:lam(0x2e2a28),gold:lam(0xe0b030),iron:lam(0x3b3b40),
+         horse:[lam(0x6b4226),lam(0x3a2a1c),lam(0xb9a58a),lam(0x8a5a30)]};
+const teamM=[{main:lam(PLAYER.main),accent:lam(PLAYER.accent)},{main:lam(0x4b2a8f),accent:lam(0xd9b23c)}];
+
+function box(w,h,d,mat,x=0,y=0,z=0){ const m=new THREE.Mesh(BOX,mat); m.scale.set(w,h,d); m.position.set(x,y,z); m.castShadow=true; return m; }
+function limb(w,h,d,mat,x,y,z){ const g=new THREE.Group(); g.position.set(x,y,z); g.add(box(w,h,d,mat,0,-h/2,0)); return g; }
+function wheel(r,w,x,y,z){ const m=new THREE.Mesh(CYL,M.wood); m.scale.set(r,w,r); m.rotation.z=Math.PI/2; m.position.set(x,y,z); m.castShadow=true; return m; }
+
+/* ---- low-poly soldiers: each body part is one merged, vertex-coloured mesh hung on a small skeleton ---- */
+const VM=new THREE.MeshLambertMaterial({vertexColors:true,flatShading:true});
+const _m4=new THREE.Matrix4(),_q=new THREE.Quaternion(),_e=new THREE.Euler(),_v=new THREE.Vector3(),_s=new THREE.Vector3(),_c=new THREE.Color();
+// part = [kind, colour, sx,sy,sz, x,y,z, rx,ry,rz, topRatio]   kinds: b box, c 6-sided cylinder, k cone, s faceted ball
+function geo(parts){
+  const pos=[],col=[];
+  for(const p of parts){ const k=p[0], ex=p[11];
+    let g=k==='b'?new THREE.BoxGeometry(1,1,1):k==='c'?new THREE.CylinderGeometry(.5*(ex===undefined?1:ex),.5,1,6):k==='k'?new THREE.ConeGeometry(.5,1,6):new THREE.IcosahedronGeometry(.5,0);
+    if(g.index){ const n=g.toNonIndexed(); g.dispose(); g=n; }
+    _m4.compose(_v.set(p[5],p[6],p[7]),_q.setFromEuler(_e.set(p[8]||0,p[9]||0,p[10]||0)),_s.set(p[2],p[3],p[4])); g.applyMatrix4(_m4);
+    const a=g.attributes.position.array; _c.set(p[1]);
+    for(let i=0;i<a.length;i+=3){ pos.push(a[i],a[i+1],a[i+2]); col.push(_c.r,_c.g,_c.b); }
+    g.dispose(); }
+  const out=new THREE.BufferGeometry(); out.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); out.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+  out.computeVertexNormals(); return out;
+}
+const GC={};
+function pm(key,fn){ const m=new THREE.Mesh(GC[key]||(GC[key]=geo(fn())),VM); m.castShadow=true; m.userData.shared=true; return m; }
+function piv(x,y,z,...kids){ const g=new THREE.Group(); g.position.set(x,y,z); for(const k of kids) g.add(k); return g; }
+const C={skin:0xd9a77a,steel:0xb4bac4,dsteel:0x6d737d,wood:0x6e4a2a,leather:0x4a3524,gold:0xdcae2e,white:0xece6d6,black:0x26221f,cloth:0x3a3340};
+const HCOL=[0x6b4226,0x3a2a1c,0xb9a58a,0x8a5a30];
+const WP={sword:'slash',shield:'slash',hero:'slash',spear:'thrust',cavalry:'thrust',archer:'bow',harcher:'bow',crossbow:'gun',musket:'gun'};
+
+function headParts(type,east,Mc,Ac){
+  const p=[['c',C.skin,.13,.12,.13,0,.66,0],['c',C.skin,.3,.3,.3,0,.84,0,0,0,0,.9]];
+  if(east) p.push(['b',C.black,.2,.1,.07,0,.75,.13]);
+  if(east){
+    if(type==='sword'||type==='shield') p.push(['c',C.steel,.36,.14,.36,0,1.0,0,0,0,0,.85],['k',C.steel,.3,.24,.3,0,1.17,0],['c',C.dsteel,.38,.2,.38,0,.86,-.04],['c',Ac,.4,.07,.4,0,.97,0]);
+    else if(type==='spear') p.push(['c',Ac,.4,.16,.4,0,1.02,0],['s',Ac,.34,.2,.34,0,1.1,0]);
+    else if(type==='archer'||type==='harcher') p.push(['c',C.leather,.38,.16,.38,0,1.02,0],['k',Mc,.3,.22,.3,0,1.2,0]);
+    else if(type==='crossbow') p.push(['c',Ac,.38,.14,.38,0,1.02,0],['s',Mc,.3,.2,.3,0,1.1,0]);
+    else if(type==='musket') p.push(['c',C.white,.3,.36,.3,0,1.16,0],['b',C.white,.26,.42,.05,0,1.02,-.2,.15],['b',C.gold,.1,.16,.03,0,1.08,.16]);
+    else if(type==='cavalry') p.push(['c',C.steel,.36,.14,.36,0,1.0,0,0,0,0,.85],['k',C.steel,.3,.26,.3,0,1.19,0],['c',C.dsteel,.38,.2,.38,0,.86,-.04],['b',Mc,.05,.3,.05,0,1.42,0]);
+    else p.push(['c',C.white,.46,.2,.46,0,1.04,0],['s',C.white,.38,.22,.38,0,1.14,0],['k',C.gold,.2,.24,.2,0,1.3,0],['b',Mc,.06,.32,.16,0,1.34,-.06]);
+  } else {
+    if(type==='sword') p.push(['s',C.steel,.38,.36,.38,0,.98,0],['c',C.dsteel,.36,.16,.36,0,.84,-.04]);
+    else if(type==='spear'||type==='crossbow') p.push(['c',C.steel,.54,.05,.54,0,1.0,0],['c',C.steel,.34,.16,.34,0,1.08,0,0,0,0,.6]);
+    else if(type==='archer'||type==='harcher') p.push(['c',Ac,.36,.2,.36,0,1.0,0,0,0,0,.7],['b',Ac,.34,.3,.1,0,.86,-.14]);
+    else if(type==='musket') p.push(['c',C.steel,.52,.05,.52,0,1.0,0],['s',C.steel,.34,.3,.34,0,1.06,0],['b',C.steel,.04,.14,.4,0,1.2,0]);
+    else if(type==='shield'||type==='cavalry'){ p.push(['b',C.steel,.33,.36,.33,0,.88,0],['b',C.black,.22,.035,.02,0,.92,.166],['c',C.steel,.3,.06,.3,0,1.08,0,0,0,0,.7]); if(type==='cavalry') p.push(['b',Ac,.06,.3,.2,0,1.24,-.04]); }
+    else p.push(['s',C.steel,.38,.36,.38,0,.98,0],['c',C.gold,.4,.1,.4,0,1.06,0],['k',C.gold,.1,.14,.1,.14,1.16,0],['k',C.gold,.1,.14,.1,-.14,1.16,0],['k',C.gold,.1,.16,.1,0,1.17,.14]);
+  }
+  return p;
+}
+function torsoParts(type,east,Mc,Ac,mounted){
+  const armored=type==='sword'||type==='spear'||type==='shield'||type==='cavalry'||type==='hero';
+  const p=[['c',Mc,.6,.5,.38,0,.4,0,0,0,0,1.18],['c',C.leather,.52,.09,.36,0,.14,0]];
+  if(!mounted) p.push(['c',east?Mc:C.cloth,east?.62:.5,east?.42:.26,.42,0,east?-.1:-.02,0,0,0,0,.8]);
+  if(east) p.push(['c',Ac,.54,.08,.38,0,.22,0]); else p.push(['b',Ac,.2,.5,.4,0,.38,0]);
+  if(armored) p.push(['b',east?C.dsteel:C.steel,.44,.3,.05,0,.44,.185],['b',C.steel,.2,.1,.24,.36,.6,0],['b',C.steel,.2,.1,.24,-.36,.6,0]);
+  if(type==='archer'||type==='harcher') p.push(['c',C.leather,.13,.46,.13,.13,.42,-.24,.25],['b',C.white,.1,.1,.1,.13,.68,-.3]);
+  if(type==='hero') p.push(['b',Ac,.6,.9,.05,0,.18,-.26,.1],['c',C.wood,.05,2.6,.05,-.26,1.2,-.3],['b',Mc,.04,.6,.9,-.26,2.2,-.78],['b',C.gold,.045,.14,.9,-.26,2.2,-.78]);
+  if(mounted) for(const sd of [-1,1]) p.push(['c',C.cloth,.2,.46,.2,sd*.3,-.06,.14,1.15],['c',C.leather,.16,.42,.16,sd*.36,-.42,.3,.15],['b',C.leather,.14,.08,.26,sd*.36,-.64,.36]);
+  return p.concat(headParts(type,east,Mc,Ac));
+}
+function armParts(Mc,bare){ return [['c',Mc,.16,.32,.16,0,-.15,0],['c',bare?C.skin:Mc,.13,.3,.13,0,-.44,.02],['b',C.skin,.1,.11,.1,0,-.63,.03]]; }
+function weaponParts(type,east,Mc,Ac){
+  switch(type){
+    case 'sword': case 'shield': case 'hero': { const L=type==='hero'?1.15:type==='shield'?.7:.9;
+      return east?[['b',C.steel,.035,.08,L*.72,0,-.63,.12+L*.36],['b',C.steel,.035,.08,L*.36,0,-.57,.1+L*.86,-.38],['b',C.gold,.2,.05,.05,0,-.63,.12]]
+                 :[['b',C.steel,.04,.09,L,0,-.63,.12+L/2],['b',C.gold,.28,.05,.05,0,-.63,.12],['c',C.gold,.07,.07,.07,0,-.63,-.04]]; }
+    case 'spear': return [['c',C.wood,.05,3.0,.05,0,-.63,.75,Math.PI/2],['k',C.steel,.11,.34,.11,0,-.63,2.42,Math.PI/2],['b',Ac,.02,.2,.34,0,-.52,1.9]];
+    case 'cavalry': return [['c',C.wood,.06,3.5,.06,0,-.63,.9,Math.PI/2],['k',C.steel,.12,.36,.12,0,-.63,2.83,Math.PI/2],['b',Ac,.02,.26,.5,0,-.48,2.3]];
+    case 'crossbow': return [['b',C.wood,.07,.62,.08,0,-.72,.03],['b',C.dsteel,.78,.05,.05,0,-.98,.03],['b',C.white,.6,.012,.012,0,-.82,.03]];
+    case 'musket': return [['c',C.dsteel,.05,1.3,.05,0,-1.1,.03],['b',C.wood,.08,.55,.12,0,-.5,.03]];
+    default: return [];
+  }
+}
+function shieldParts(type,east,Mc,Ac){
+  if(type==='shield') return east?[['c',Ac,.95,.07,.95,-.04,-.42,.2,Math.PI/2],['c',Mc,.6,.08,.6,-.04,-.42,.21,Math.PI/2],['s',C.gold,.2,.2,.14,-.04,-.42,.26]]
+                                 :[['b',Ac,.72,1.15,.07,-.04,-.42,.2],['b',Mc,.14,1.15,.075,-.04,-.42,.2],['b',Mc,.72,.14,.075,-.04,-.3,.2]];
+  if(type==='sword'||type==='cavalry'||type==='spear') return east?[['c',Ac,.62,.06,.62,-.06,-.42,.15,Math.PI/2],['s',C.gold,.16,.16,.1,-.06,-.42,.2]]
+                                 :[['b',Ac,.46,.6,.06,-.06,-.4,.15],['k',Ac,.5,.3,.07,-.06,-.82,.15,Math.PI],['b',Mc,.1,.6,.065,-.06,-.4,.15]];
+  if(type==='archer'||type==='harcher') return [['b',C.wood,.045,.045,.5,0,-.64,0],['b',C.wood,.045,.045,.44,0,-.585,.44,-.3],['b',C.wood,.045,.045,.44,0,-.585,-.44,.3],['b',C.white,.012,.012,1.2,0,-.5,0]];
+  return [];
+}
+function soldier(type,team,mounted){
+  const east=team===0||LV.foeStyle==='east', Mc=team?LV.foeMain:PLAYER.main, Ac=team?LV.foeAccent:PLAYER.accent;
+  const k=type+'|'+(team?Mc+'.'+Ac+(east?'e':'w'):'p')+(mounted?'m':'')+'|';
+  const P={kind:'inf',type,wp:WP[type]};
+  const bare=type==='archer'||type==='harcher'||type==='crossbow'||type==='musket';
+  P.armR=piv(.37,.56,0,pm(k+'r',()=>armParts(Mc,bare).concat(weaponParts(type,east,Mc,Ac))));
+  P.armL=piv(-.37,.56,0,pm(k+'l',()=>armParts(Mc,bare).concat(shieldParts(type,east,Mc,Ac))));
+  P.body=piv(0,mounted?1.5:.8,0,pm(k+'t',()=>torsoParts(type,east,Mc,Ac,mounted)),P.armR,P.armL); P.hipY=P.body.position.y;
+  const g=new THREE.Group(); g.add(P.body);
+  if(!mounted){ P.legs=[]; for(const sd of [-1,1]){ const sh=piv(0,-.4,0,pm('shin',()=>[['c',C.leather,.16,.38,.16,0,-.19,0,0,0,0,1.15],['b',C.leather,.14,.08,.27,0,-.37,.06]]));
+      const th=piv(sd*.13,.8,0,pm(k+'th',()=>[['c',east?Mc:C.cloth,.2,.42,.2,0,-.2,0,0,0,0,1.1]]),sh); g.add(th); P.legs.push({th,sh}); } }
+  if(type==='hero'){ const tl=new THREE.PointLight(0xffa040,90,20,2); tl.position.set(0,1.6,.6); P.body.add(tl); }
+  g.userData=P; return g;
+}
+function horse(team,ci){
+  const Mc=team?LV.foeMain:PLAYER.main, Ac=team?LV.foeAccent:PLAYER.accent, hc=HCOL[ci], k='h'+ci+'|'+(team?Mc+'.'+Ac:'p')+'|';
+  const H={legs:[]}, root=new THREE.Group();
+  root.add(pm(k+'b',()=>[['c',hc,.64,1.5,.68,0,1.12,0,Math.PI/2],['s',hc,.7,.74,.7,0,1.14,.72],['s',hc,.72,.76,.72,0,1.16,-.72],['b',Mc,.7,.4,.86,0,1.2,-.05],['b',Ac,.72,.08,.88,0,.99,-.05],['b',C.leather,.42,.12,.5,0,1.48,-.05]]));
+  H.neck=piv(0,1.3,.85,pm('hn'+ci,()=>[['c',hc,.32,.86,.4,0,.3,.16,.6,0,0,.7],['b',hc,.2,.26,.58,0,.72,.6,.45],['b',C.black,.07,.74,.1,0,.36,-.02,.6],['k',hc,.07,.14,.07,.07,.92,.4],['k',hc,.07,.14,.07,-.07,.92,.4]])); root.add(H.neck);
+  H.tail=piv(0,1.34,-1.05,pm('htail',()=>[['c',C.black,.13,.75,.13,0,-.32,-.12,-.4]])); root.add(H.tail);
+  for(const q of [[-1,1],[1,1],[-1,-1],[1,-1]]){ const sh=piv(0,-.45,0,pm('hsh'+ci,()=>[['c',hc,.13,.4,.13,0,-.2,0],['b',C.black,.15,.1,.17,0,-.38,.02]]));
+    const th=piv(q[0]*.21,.88,q[1]*.64,pm('hth'+ci,()=>[['c',hc,.22,.48,.24,0,-.22,0,0,0,0,1.3]]),sh); root.add(th); H.legs.push({th,sh}); }
+  H.root=root; return H;
+}
+function buildUnit(type,team,siegeKind){
+  if(type==='siege'){
+    const tm=teamM[team], g=new THREE.Group(), P=g.userData={kind:'siege',arm:null,barrel:null};
+    if((siegeKind||LV.siege)==='cannon'){
+      g.add(box(.9,.3,2.0,M.wood,0,.62,-.3)); g.add(wheel(.62,.16,-.66,.62,.1)); g.add(wheel(.62,.16,.66,.62,.1));
+      const b=new THREE.Group(); b.position.set(0,1.0,.1); b.rotation.x=-.16;
+      const br=new THREE.Mesh(CYL,M.iron); br.scale.set(.27,2.4,.27); br.rotation.x=Math.PI/2; br.position.z=.6; br.castShadow=true; b.add(br);
+      const mz=new THREE.Mesh(CYL,M.gold); mz.scale.set(.31,.2,.31); mz.rotation.x=Math.PI/2; mz.position.z=1.75; b.add(mz);
+      g.add(b); P.barrel=b;
+    } else {
+      g.add(box(1.5,.25,2.7,M.wood,0,.55,0));
+      for(const sx of [-1,1]) for(const sz of [-1,1]) g.add(wheel(.45,.18,sx*.86,.45,sz*.95));
+      for(const sx of [-1,1]) g.add(box(.15,1.3,.15,M.wood,sx*.5,1.25,.2));
+      g.add(box(1.2,.15,.15,M.wood,0,1.85,.2));
+      const a=new THREE.Group(); a.position.set(0,1.55,.2);
+      a.add(box(.14,.14,2.8,M.wood,0,0,-.9)); a.add(box(.42,.22,.42,M.dark,0,.05,-2.25)); a.add(box(.4,.4,.4,M.iron,0,-.2,.5));
+      g.add(a); P.arm=a;
+    }
+    g.add(box(.05,1.2,.05,M.wood,-.5,1.3,-1.1)); g.add(box(.04,.4,.6,tm.main,-.5,1.7,-1.42));
+    g.scale.setScalar(1.12); return g;
+  }
+  const mounted=type==='cavalry'||type==='harcher', g=soldier(type,team,mounted), P=g.userData;
+  if(mounted){ P.h=horse(team,(Math.random()*4)|0); g.add(P.h.root); P.h.root.add(P.body); }
+  g.scale.setScalar(type==='hero'?1.5:1.12); return g;
+}
+function animate(u,dt,t){
+  const P=u.mesh.userData, T=u.T, mv=u.moving, a=u.atk, p=1-a, win=state==='end'&&u.team===winner, w=u.walk;
+  if(P.kind==='siege'){ const k=Math.sin(a*Math.PI); if(P.arm) P.arm.rotation.x=T.rest-k*T.swing; if(P.barrel) P.barrel.position.z=.1-k*.45; return; }
+  const B=P.body, R=P.armR, L=P.armL, wp=P.wp;
+  let lean=mv?.1:0, twist=0, bob=mv?Math.abs(Math.sin(w))*.05:Math.sin(t*2+u.ph)*.012, rx=-.35, rz=0, rzp=0, lx=-.5;
+  if(wp==='slash'){ rx=-.4+(mv?Math.sin(w)*.2:Math.sin(t*1.6+u.ph)*.05); lx=P.type==='shield'?-.8:-.55;
+    if(a>0){ const k=p<.35?p/.35:p<.6?1-(p-.35)/.25*1.25:-.25*(1-(p-.6)/.4); rx=-.4-2.1*k; rz=.35*k; twist=.45*k; lean+=k<0?.22:-.06; } }
+  else if(wp==='thrust'){ rx=mv?-.22:-.12; lx=-.55;
+    if(a>0){ const k=p<.4?-(p/.4)*.3:p<.6?-.3+(p-.4)/.2*.9:.6*(1-(p-.6)/.4); rzp=k*.38; rx-=Math.max(0,k)*.25; lean+=Math.max(0,k)*.4; twist=-k*.3; } }
+  else if(wp==='bow'){ const aim=!mv||T.kite; rx=aim?-1.45:-.5+Math.sin(w)*.3; lx=aim?-1.5:-.7; if(aim) rzp=-.3*(1-clamp(u.cd/T.cd,0,1)); }
+  else { rx=mv?-.95:-1.45; lx=mv?-.8:-1.25; if(a>0){ const k=Math.sin(a*Math.PI); lean-=.2*k; rx-=.28*k; } }
+  if(u.rout){ rx=-2.5+Math.sin(w)*.3; lx=-2.5-Math.sin(w)*.3; lean=.28; twist=0; rzp=0; rz=0; }
+  if(win){ rx=-2.7+Math.sin(t*9+u.ph)*.25; lean=0; twist=0; rzp=0; rz=0; }
+  R.rotation.x=rx; R.rotation.z=rz; R.position.z=rzp; L.rotation.x=lx;
+  B.position.y=P.hipY+bob; B.rotation.x=lean-u.hit*.28; B.rotation.y=twist;
+  if(P.legs) for(let i=0;i<2;i++){ const ph=w+i*Math.PI, lg=P.legs[i], st=a>0&&i===0?Math.sin(p*Math.PI):0;
+    lg.th.rotation.x=mv?Math.sin(ph)*.7:-.3*st; lg.sh.rotation.x=mv?Math.max(0,-Math.cos(ph))*1.1+.08:.04+.3*st; }
+  if(P.h){ const H=P.h, off=[0,.7,Math.PI,Math.PI+.7];
+    for(let i=0;i<4;i++){ const ph=w+off[i], lg=H.legs[i]; lg.th.rotation.x=mv?Math.sin(ph)*.75:0; lg.sh.rotation.x=mv?Math.max(0,-Math.cos(ph))*1.25:0; }
+    H.root.rotation.x=mv?Math.sin(w)*.05:0; H.root.position.y=mv?Math.abs(Math.sin(w))*.1:0;
+    H.neck.rotation.x=mv?.15+Math.sin(w+1)*.1:Math.sin(t*.8+u.ph)*.07; H.tail.rotation.z=Math.sin(t*3+u.ph)*.3; }
+}
+
+/* unit thumbnails for the cards */
+const THUMB={};
+function makeThumbs(){
+  const s=new THREE.Scene(); s.background=new THREE.Color(0xe6d3a3);
+  s.add(new THREE.HemisphereLight(0xffffff,0x6b5a40,2.2)); const d=new THREE.DirectionalLight(0xffffff,2.2); d.position.set(3,5,4); s.add(d);
+  const c=new THREE.PerspectiveCamera(30,1,.1,60);
+  renderer.setSize(96,96,false);
+  const shot=(key,type,kind)=>{
+    const g=buildUnit(type,0,kind); g.rotation.y=.7; s.add(g);
+    const big=type==='cavalry'||type==='harcher'||type==='siege', h=type==='hero';
+    c.position.set(0,big?2.2:h?2.4:1.6,big?8.5:h?8:5.6); c.lookAt(0,big?1.2:h?1.7:1.15,0);
+    renderer.render(s,c); THUMB[key]=canvas.toDataURL('image/png'); s.remove(g);
+  };
+  for(const t of ORDER) if(t!=='siege') shot(t,t);
+  shot('catapult','siege','catapult'); shot('cannon','siege','cannon');
+  resize();
+}
+
+/* =====================================================================
+   MAPS
+   ===================================================================== */
+function clearGroup(g){
+  g.traverse(o=>{ if(o.geometry&&!o.userData.shared) o.geometry.dispose(); if(o.material&&!o.userData.shared){ if(o.material.map) o.material.map.dispose(); o.material.dispose(); } });
+  g.clear();
+}
+function groundTex(base,R){
+  const cv=document.createElement('canvas'); cv.width=cv.height=256; const x=cv.getContext('2d');
+  const c=new THREE.Color(base); x.fillStyle='#'+c.getHexString(); x.fillRect(0,0,256,256);
+  for(let i=0;i<2600;i++){ const k=.82+R()*.36, cc=c.clone().multiplyScalar(k); x.fillStyle='#'+cc.getHexString(); const s=1+R()*3; x.fillRect(R()*256,R()*256,s,s); }
+  const t=new THREE.CanvasTexture(cv); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(70,70); t.colorSpace=THREE.SRGBColorSpace; return t;
+}
+function scatter(geo,mat,n,place,cast=true){
+  const im=new THREE.InstancedMesh(geo,mat,n), d=new THREE.Object3D();
+  for(let i=0;i<n;i++){ d.position.set(0,0,0); d.rotation.set(0,0,0); d.scale.set(1,1,1); place(d,i); d.position.y+=HT(d.position.x,d.position.z); d.updateMatrix(); im.setMatrixAt(i,d.matrix); }
+  im.castShadow=cast; im.receiveShadow=true; world.add(im); return im;
+}
+const outside=(R,far=170,ok)=>{ for(let k=0;k<200;k++){ const x=(R()*2-1)*far, z=(R()*2-1)*far; if((Math.abs(x)>66||Math.abs(z)>62)&&(!ok||ok(x,z))) return [x,z]; } return [200,200]; };
+const inside=R=>[(R()*2-1)*58,(R()*2-1)*43];
+function trees(R,n,leaf,ok){
+  const pts=Array.from({length:n},()=>{ const p=outside(R,170,ok); return [p[0],p[1],.7+R()*.9]; });
+  scatter(new THREE.CylinderGeometry(.3,.45,2.6,6),lam(0x5a3d22),n,(d,i)=>{ const[x,z,s]=pts[i]; d.position.set(x,1.3*s,z); d.scale.setScalar(s); });
+  scatter(new THREE.ConeGeometry(2.2,5.6,7),lam(leaf),n,(d,i)=>{ const[x,z,s]=pts[i]; d.position.set(x,5*s,z); d.scale.setScalar(s); d.rotation.y=i; });
+}
+function rocks(R,n,col,inField){
+  scatter(new THREE.DodecahedronGeometry(1,0),lam(col),n,(d,i)=>{
+    const big=!inField||i%3; const [x,z]=big&&!inField?outside(R):(inField&&i%3===0?inside(R):outside(R));
+    const s=(Math.abs(x)<62&&Math.abs(z)<47)?.25+R()*.3:.8+R()*2.6; d.position.set(x,s*.3,z); d.scale.set(s,s*.7,s); d.rotation.set(R()*3,R()*3,R()*3); });
+}
+function mountains(R,n,col,snow){
+  const pts=Array.from({length:n},(_,i)=>{ const a=i/n*Math.PI*2+R()*.3, r=260+R()*120; return [Math.cos(a)*r,Math.sin(a)*r,45+R()*40,50+R()*70]; });
+  scatter(new THREE.ConeGeometry(1,1,6),lam(col),n,(d,i)=>{ const[x,z,w,h]=pts[i]; d.position.set(x,h/2-2,z); d.scale.set(w,h,w); d.rotation.y=i; },false);
+  if(snow) scatter(new THREE.ConeGeometry(1,1,6),lam(0xf4f4f0),n,(d,i)=>{ const[x,z,w,h]=pts[i]; d.position.set(x,h*.86-2,z); d.scale.set(w*.3,h*.3,w*.3); d.rotation.y=i; },false);
+}
+function hills(R,n,col){
+  scatter(new THREE.SphereGeometry(1,14,8),lam(col),n,(d,i)=>{ const a=i/n*Math.PI*2+R(), r=210+R()*120; const w=50+R()*60; d.position.set(Math.cos(a)*r,-6,Math.sin(a)*r); d.scale.set(w,14+R()*18,w); },false);
+}
+function camp(R){
+  const n=18, pts=Array.from({length:n},()=>[(R()*2-1)*54,49+R()*10]);
+  const cone=new THREE.ConeGeometry(2.4,3.4,8);
+  scatter(cone,lam(0xb0242e),n/2,(d,i)=>{ d.position.set(pts[i][0],1.7,pts[i][1]); });
+  scatter(cone.clone(),lam(0xece4cf),n/2,(d,i)=>{ const p=pts[i+n/2]; d.position.set(p[0],1.7,p[1]); d.scale.setScalar(.85); });
+  fires.length=0;
+  for(const fx of [-38,-13,13,38]){ const l=new THREE.PointLight(0xff8a30,420,48,2); l.position.set(fx,2.2,45.5); world.add(l);
+    const fl=new THREE.Mesh(new THREE.ConeGeometry(.55,1.6,5),new THREE.MeshBasicMaterial({color:0xffb040})); fl.position.set(fx,.9,45.5); world.add(fl);
+    const lg=new THREE.Mesh(new THREE.CylinderGeometry(.9,1,.3,7),lam(0x2a1c12)); lg.position.set(fx,.15,45.5); world.add(lg); fires.push({l,fl,ph:fx}); }
+  // banner
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,9,6),lam(0x5a3d22)); pole.position.set(0,4.5,47); pole.castShadow=true; world.add(pole);
+  const flag=new THREE.Mesh(new THREE.BoxGeometry(3.6,2,.08),lam(PLAYER.main)); flag.position.set(1.9,7.8,47); flag.castShadow=true; world.add(flag);
+}
+function wallRun(z,from,to,gaps,col,h=5.5){
+  const mat=lam(col), dark=lam(new THREE.Color(col).multiplyScalar(.82).getHex());
+  const edges=[from]; for(const g of [...gaps].sort((a,b)=>a.x-b.x)){ edges.push(g.x-g.w/2,g.x+g.w/2); } edges.push(to);
+  for(let i=0;i<edges.length;i+=2){
+    const a=edges[i],b=edges[i+1],len=b-a; if(len<=0) continue;
+    const seg=new THREE.Mesh(new THREE.BoxGeometry(len,h,3),mat); seg.position.set((a+b)/2,h/2,z); seg.castShadow=seg.receiveShadow=true; world.add(seg);
+    const nC=Math.floor(len/2.4);
+    if(nC>0) scatter(new THREE.BoxGeometry(1.2,.9,.6),dark,nC,(d,k)=>{ d.position.set(a+1.2+k*2.4,h+.45,z+1.2); });
+    for(const tx of [a,b]){ if(Math.abs(tx)>130) continue; const t=new THREE.Mesh(new THREE.BoxGeometry(4.6,h+3.5,4.6),dark); t.position.set(tx+(tx===a?-1:1)*-2.3+ (tx===a?0:0),(h+3.5)/2,z); t.castShadow=true; world.add(t);
+      const cap=new THREE.Mesh(new THREE.BoxGeometry(5.2,.7,5.2),mat); cap.position.set(t.position.x,h+3.85,z); world.add(cap); }
+    for(let x=a+18;x<b-10;x+=22){ const t=new THREE.Mesh(new THREE.BoxGeometry(4.2,h+2.5,4.6),dark); t.position.set(x,(h+2.5)/2,z); t.castShadow=true; world.add(t); }
+  }
+  // rubble in the breaches
+  const R=mulberry(7);
+  for(const g of gaps) scatter(new THREE.DodecahedronGeometry(.5,0),dark,10,(d)=>{ d.position.set(g.x+(R()*2-1)*g.w*.55,.2,z+(R()*2-1)*3.5); d.scale.setScalar(.5+R()); d.rotation.set(R()*3,R()*3,0); });
+}
+function town(R,n,zFrom,zTo,xr,wallCol,roofCol){
+  const pts=Array.from({length:n},()=>[(R()*2-1)*xr,zFrom+R()*(zTo-zFrom),4+R()*5,4+R()*7,4+R()*5]);
+  scatter(new THREE.BoxGeometry(1,1,1),lam(wallCol),n,(d,i)=>{ const[x,z,w,h,dd]=pts[i]; d.position.set(x,h/2,z); d.scale.set(w,h,dd); });
+  scatter(new THREE.ConeGeometry(.75,1,4),lam(roofCol),n,(d,i)=>{ const[x,z,w,h,dd]=pts[i]; d.position.set(x,h+1.2,z); d.scale.set(w,2.4,dd); d.rotation.y=Math.PI/4; });
+}
+function water(x,z,w,d,col=0x3d6f9a){ const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshLambertMaterial({color:col,transparent:true,opacity:.92})); m.rotation.x=-Math.PI/2; m.position.set(x,.06,z); m.receiveShadow=true; world.add(m); }
+
+const MAPS={
+  steppe(R){
+    mountains(R,16,0x8f7a55,true); rocks(R,70,0x8d7c62,true);
+    scatter(new THREE.SphereGeometry(.6,6,5),lam(0x8c8a45),160,(d,i)=>{ const[x,z]=i%2?inside(R):outside(R,120); d.position.set(x,.15,z); d.scale.set(.5+R()*.8,.4+R()*.4,.5+R()*.8); });
+    // the fortress of Manzikert in the distance
+    const f=lam(0x7d6a50); const keep=new THREE.Mesh(new THREE.BoxGeometry(26,12,18),f); keep.position.set(-70,6,-120); world.add(keep);
+    for(const dx of [-14,14]){ const t=new THREE.Mesh(new THREE.BoxGeometry(7,18,7),f); t.position.set(-70+dx,9,-112); world.add(t); }
+  },
+  field(R){
+    hills(R,12,0x4f7a34); trees(R,170,0x35602a); trees(R,60,0x4d7a30);
+    scatter(new THREE.BoxGeometry(.28,.3,.28),lam(0xc92a3a),420,(d)=>{ const[x,z]=inside(R); d.position.set(x*1.3,.15,z*1.3); },false);
+    scatter(new THREE.BoxGeometry(.2,.5,.2),lam(0x4a7a2c),300,(d)=>{ const[x,z]=inside(R); d.position.set(x*1.4,.25,z*1.4); },false);
+  },
+  siege(R,L){
+    const sea=(x)=>x<78;
+    wallRun(L.wall.z,-190,190,L.wall.gaps,0xb7a98a,5.5);
+    wallRun(L.wall.z-9,-190,190,[{x:-30,w:16},{x:0,w:16},{x:30,w:16}],0xa3957a,8); // inner wall (decor)
+    town(R,90,-125,-60,95,0xd8c9a8,0xa8553a);
+    // the great domed church
+    const ch=lam(0xcbb894); const b=new THREE.Mesh(new THREE.BoxGeometry(30,16,26),ch); b.position.set(-12,8,-92); world.add(b);
+    const dome=new THREE.Mesh(new THREE.SphereGeometry(11,18,10,0,Math.PI*2,0,Math.PI/2),lam(0x9a8f86)); dome.position.set(-12,16,-92); world.add(dome);
+    for(const s of [-1,1]){ const hd=new THREE.Mesh(new THREE.SphereGeometry(6,12,8,0,Math.PI*2,0,Math.PI/2),lam(0x9a8f86)); hd.position.set(-12+s*15,11,-92); world.add(hd); }
+    water(300,0,420,900); // Sea of Marmara
+    for(let i=0;i<5;i++){ const hull=new THREE.Mesh(new THREE.BoxGeometry(4,2,13),lam(0x5a3d22)); hull.position.set(105+R()*50,1,-40+i*24); world.add(hull);
+      const sail=new THREE.Mesh(new THREE.BoxGeometry(.2,8,6),lam(0xefe6d0)); sail.position.set(hull.position.x,6.5,hull.position.z); world.add(sail); }
+    trees(R,60,0x4d6a30,(x,z)=>sea(x)&&z>-5); rocks(R,40,0x9a8f7a,true);
+  },
+  marsh(R){
+    hills(R,8,0x4a6336);
+    const ponds=Array.from({length:14},()=>{ const[x,z]=outside(R,110); return [x,z,2.5+R()*4.5]; });
+    for(const[x,z,r] of ponds){ const m=new THREE.Mesh(new THREE.CircleGeometry(r,20),new THREE.MeshLambertMaterial({color:0x4b6b72,transparent:true,opacity:.85})); m.rotation.x=-Math.PI/2; m.scale.y=.6+R()*.4; m.position.set(x,.05,z); m.receiveShadow=true; world.add(m); }
+    scatter(new THREE.BoxGeometry(.1,1.5,.1),lam(0x7c8a3a),520,(d,i)=>{ const p=ponds[i%ponds.length], a=R()*6.3, r=p[2]*(.75+R()*.5); d.position.set(p[0]+Math.cos(a)*r,.7,p[1]+Math.sin(a)*r*.8); d.rotation.z=(R()-.5)*.3; },false);
+    water(118,0,70,900,0x4f6f80); // the Danube
+    trees(R,110,0x3d5a2c,(x)=>x<78||x>156); rocks(R,24,0x6f6a5a,false);
+  },
+  pass(R){
+    mountains(R,14,0x7d7362,true);
+    scatter(new THREE.DodecahedronGeometry(1,0),lam(0x8a7f6c),46,(d,i)=>{ const sd=i%2?1:-1; d.position.set(sd*(74+R()*45),4+R()*6,-100+R()*200); d.scale.set(14+R()*14,18+R()*26,14+R()*16); d.rotation.set(R(),R()*3,R()); });
+    rocks(R,50,0x857a68,true); trees(R,50,0x3f5a2e,(x)=>Math.abs(x)<64);
+  },
+  danube(R){
+    hills(R,10,0x557d38); water(0,-150,900,120,0x4a7396);
+    const hill=new THREE.Mesh(new THREE.SphereGeometry(1,20,10),lam(0x5d8440)); hill.scale.set(60,22,40); hill.position.set(88,-6,-82); world.add(hill);
+    const f=lam(0xa89a80), k=new THREE.Mesh(new THREE.BoxGeometry(24,10,16),f); k.position.set(88,19,-82); k.castShadow=true; world.add(k);
+    for(const dx of [-12,12]) for(const dz of [-8,8]){ const t=new THREE.Mesh(new THREE.BoxGeometry(5,16,5),f); t.position.set(88+dx,22,-82+dz); t.castShadow=true; world.add(t); }
+    trees(R,140,0x3b6a2c,(x,z)=>z>-88&&!(x>40&&z<-50));
+    scatter(new THREE.BoxGeometry(.2,.5,.2),lam(0x4f7d2e),300,(d)=>{ const[x,z]=inside(R); d.position.set(x*1.4,.25,z*1.3); },false);
+  },
+  coast(R){
+    hills(R,8,0x5a7d3a); water(330,0,480,900,0x2f6a9a); water(-200,-40,200,260,0x4a7f9a);
+    trees(R,120,0x3d6a2e,(x,z)=>x<85&&!(x<-96&&z>-175&&z<95)); rocks(R,30,0x8a8370,true);
+    scatter(new THREE.BoxGeometry(.1,1.4,.1),lam(0x8a9040),260,(d)=>{ d.position.set(-97-R()*5,.7,-165+R()*250); d.rotation.z=(R()-.5)*.3; },false);
+  },
+  highland(R){
+    mountains(R,20,0x8a8672,true); rocks(R,60,0x8f8a78,true);
+    scatter(new THREE.SphereGeometry(.6,6,5),lam(0x7f8a45),200,(d,i)=>{ const[x,z]=i%2?inside(R):outside(R,120); d.position.set(x,.15,z); d.scale.set(.5+R()*.8,.4,.5+R()*.8); });
+    const n=16; // the chained wagons
+    scatter(new THREE.BoxGeometry(4.2,1.8,2.2),lam(0x7a5230),n,(d,i)=>{ d.position.set(-45+i*6,1.6,47.2); });
+    scatter(new THREE.BoxGeometry(4.4,1.2,2.4),lam(0xe6dcc0),n,(d,i)=>{ d.position.set(-45+i*6,3.0,47.2); });
+    scatter(new THREE.CylinderGeometry(.8,.8,.25,10),lam(0x4a3320),n*2,(d,i)=>{ d.position.set(-45+((i/2)|0)*6+(i%2?1.3:-1.3),.8,46); d.rotation.x=Math.PI/2; });
+  },
+  desert(R){
+    hills(R,10,0xc9a55e); rocks(R,40,0xb39a6a,true);
+    const py=lam(0xd9bb7a); // the pyramids of Giza on the horizon
+    for(const [x,z,s] of [[-150,-210,70],[-70,-240,58],[0,-215,36]]){ const p=new THREE.Mesh(new THREE.ConeGeometry(s,s*.9,4),py); p.position.set(x,s*.45-1,z); p.rotation.y=Math.PI/4; world.add(p); }
+    water(150,0,60,900,0x3f7f8f); // the Nile
+    const pts=Array.from({length:70},()=>[112+R()*10+(R()<.5?0:72),-200+R()*400,.8+R()*.6]);
+    scatter(new THREE.CylinderGeometry(.25,.35,6,6),lam(0x7a5a34),70,(d,i)=>{ const[x,z,s]=pts[i]; d.position.set(x,3*s,z); d.scale.setScalar(s); d.rotation.z=(R()-.5)*.2; });
+    scatter(new THREE.ConeGeometry(2.4,1.6,6),lam(0x3f7a34),70,(d,i)=>{ const[x,z,s]=pts[i]; d.position.set(x,6.3*s,z); d.scale.setScalar(s); });
+    town(R,40,-140,-70,60,0xdcc79a,0xc9a56a);
+    scatter(new THREE.BoxGeometry(5,.9,1.2),lam(0xa8894e),9,(d,i)=>{ d.position.set(-24+i*6,.45,-27); }); // earthworks before the guns
+  },
+  vienna(R){
+    // city behind your camp
+    wallRun(72,-190,190,[],0xb9ad98,8);
+    town(R,110,80,150,120,0xe0d6c0,0x9a4a35);
+    const st=lam(0x8f8778); const nave=new THREE.Mesh(new THREE.BoxGeometry(14,18,34),st); nave.position.set(10,9,112); world.add(nave);
+    const tw=new THREE.Mesh(new THREE.BoxGeometry(7,40,7),st); tw.position.set(20,20,112); world.add(tw);
+    const sp=new THREE.Mesh(new THREE.ConeGeometry(5,26,4),lam(0x4a5a52)); sp.position.set(20,53,112); sp.rotation.y=Math.PI/4; world.add(sp);
+    // the Kahlenberg
+    const hill=new THREE.Mesh(new THREE.SphereGeometry(1,24,12),lam(0x4f7a36)); hill.scale.set(210,42,70); hill.position.set(0,-8,-150); world.add(hill);
+    scatter(new THREE.ConeGeometry(2.4,6,6),lam(0x2f5526),150,(d)=>{ const x=(R()*2-1)*170, z=-110-R()*70; const k=1-Math.pow((z+150)/70,2)-Math.pow(x/210,2); d.position.set(x,Math.max(0,-8+42*Math.sqrt(Math.max(0,k)))+2.5,z); d.scale.setScalar(.8+R()*.7); },false);
+    trees(R,90,0x3f6b2c,(x,z)=>z<66);
+    scatter(new THREE.BoxGeometry(.2,.5,.2),lam(0x55832f),300,(d)=>{ const[x,z]=inside(R); d.position.set(x*1.4,.25,z*1.2); },false);
+  }
+};
+
+function rp(t,R){ if(t.r){ const a=R()*6.283, d=Math.sqrt(R())*t.r; return [t.x+Math.cos(a)*d,t.z+Math.sin(a)*d]; } return [t.x0+R()*(t.x1-t.x0),t.z0+R()*(t.z1-t.z0)]; }
+function flat(t,col,op,y,grow=0){ let m; const mat=new THREE.MeshLambertMaterial({color:col,transparent:true,opacity:op,depthWrite:false});
+  if(t.r){ m=new THREE.Mesh(new THREE.CircleGeometry(t.r+grow,30),mat); m.position.set(t.x,y,t.z); }
+  else { m=new THREE.Mesh(new THREE.PlaneGeometry(t.x1-t.x0+grow*2,t.z1-t.z0+grow*2),mat); m.position.set((t.x0+t.x1)/2,y,(t.z0+t.z1)/2); }
+  m.rotation.x=-Math.PI/2; m.receiveShadow=true; m.userData.g=true; world.add(m); }
+// the ground itself: a faceted, rolling mesh coloured per vertex (paths, forest floor, mud, sand, hilltops)
+function buildGround(L,R){
+  L.hillsC=(L.terrain||[]).filter(t=>t.k==='hill');
+  const gc=new THREE.Color(L.theme.ground), tex=groundTex(0xdedede,R); tex.repeat.set(1,1);
+  const mat=new THREE.MeshLambertMaterial({map:tex,vertexColors:true,flatShading:true});
+  const dirt=gc.clone().lerp(new THREE.Color(0x6b5236),.6), mud=new THREE.Color(0x3d3323), wood=new THREE.Color(0x22381a), sand=gc.clone().lerp(new THREE.Color(0xd8c690),.6), c=new THREE.Color();
+  const mk=(w,d,sx,sz,fine)=>{
+    const g=new THREE.PlaneGeometry(w,d,sx,sz); g.rotateX(-Math.PI/2); const ps=g.attributes.position, uv=g.attributes.uv, col=new Float32Array(ps.count*3);
+    for(let i=0;i<ps.count;i++){ const x=ps.getX(i), z=ps.getZ(i); let y=HT(x,z);
+      if(fine){ if(Math.abs(x)>w/2-.1||Math.abs(z)>d/2-.1) y-=2; } else if(Math.abs(x)<118&&Math.abs(z)<98) y-=3;
+      ps.setY(i,y); uv.setXY(i,x/18,z/18);
+      c.copy(gc).multiplyScalar(1+N(x*2.7+31,z*2.7-17)*.07+HH(x,z)*.03);
+      if(fine){ const pth=Math.abs(x-7*Math.sin(z*.045+L.seed)); if(pth<2.4&&Math.abs(z)<70&&!L.wall) c.lerp(dirt,.55*(1-pth/2.4)+.2);
+        for(const t of L.terrain||[]){ if(t.k==='hill') continue; const k=shapeK(t,x,z,2.5); if(k>0) c.lerp(t.k==='forest'||t.k==='vines'?wood:(t.k==='stakes'||t.k==='wagons'||t.k==='rocks')?dirt:mud,k*(t.k==='vines'?.35:.7)); } }
+      const wt=wetAt(x,z); if(wt>0) c.lerp(sand,Math.min(1,wt*1.6));
+      col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b; }
+    g.setAttribute('color',new THREE.BufferAttribute(col,3)); g.computeVertexNormals();
+    const m=new THREE.Mesh(g,mat); m.receiveShadow=true; m.userData.g=true; world.add(m); };
+  mk(250,210,166,140,true); mk(1400,1400,100,100,false);
+}
+function buildTerrain(L,R){
+  const gc=new THREE.Color(L.theme.ground);
+  for(const t of L.terrain||[]){
+    const area=t.r?Math.PI*t.r*t.r:(t.x1-t.x0)*(t.z1-t.z0);
+    if(t.k==='forest'){
+      const n=Math.round(area*.075), pts=Array.from({length:n},()=>{ const p=rp(t,R); return [p[0],p[1],.5+R()*.5]; });
+      scatter(new THREE.CylinderGeometry(.22,.3,2.2,5),lam(0x4a321c),n,(d,i)=>{ const[x,z,k]=pts[i]; d.position.set(x,1.1*k,z); d.scale.setScalar(k); });
+      scatter(new THREE.ConeGeometry(1.7,4.6,6),new THREE.MeshLambertMaterial({color:0x2f5a26,flatShading:true}),n,(d,i)=>{ const[x,z,k]=pts[i]; d.position.set(x,4.3*k,z); d.scale.setScalar(k); d.rotation.y=i; });
+      scatter(new THREE.IcosahedronGeometry(.8,0),new THREE.MeshLambertMaterial({color:0x35602a,flatShading:true}),Math.round(n*.6),(d)=>{ const p=rp(t,R); d.position.set(p[0],.4,p[1]); d.scale.set(1.2,.7,1.2); });
+    } else if(t.k==='vines'){
+      scatter(new THREE.BoxGeometry(2.4,1.0,.5),new THREE.MeshLambertMaterial({color:0x3f6a2a,flatShading:true}),Math.round(area*.12),(d)=>{ const p=rp(t,R); d.position.set(p[0],.5,Math.round(p[1]/2.2)*2.2); });
+      scatter(new THREE.BoxGeometry(.08,1.3,.08),lam(0x6e4a2a),Math.round(area*.1),(d)=>{ const p=rp(t,R); d.position.set(p[0],.65,Math.round(p[1]/2.2)*2.2); },false);
+    } else if(t.k==='marsh'){
+      flat(t,0x3f6670,.82,-.18,1.4);
+      scatter(new THREE.BoxGeometry(.1,1.5,.1),lam(0x7c8a3a),Math.round(area*.22),(d)=>{ const p=rp(t,R); d.position.set(p[0],.75,p[1]); d.rotation.z=(R()-.5)*.3; },false);
+    } else if(t.k==='trench'){
+      scatter(new THREE.BoxGeometry(.16,1.3,.16),lam(0x6a4a2a),Math.round((t.x1-t.x0)*.9),(d,i)=>{ d.position.set(t.x0+i/.9,.45,(i%2?t.z0-.9:t.z1+.9)); d.rotation.x=i%2?.5:-.5; });
+    } else if(t.k==='rocks'){
+      const rm=new THREE.MeshLambertMaterial({color:gc.clone().lerp(new THREE.Color(0x77736a),.7),flatShading:true});
+      scatter(new THREE.DodecahedronGeometry(1,0),rm,Math.round(area*.13),(d)=>{ const p=rp(t,R), k=.35+R()*R()*1.5; d.position.set(p[0],k*.35,p[1]); d.scale.set(k,k*(.6+R()*.5),k); d.rotation.set(R()*3,R()*3,R()*3); });
+      scatter(new THREE.DodecahedronGeometry(.3,0),rm,Math.round(area*.3),(d)=>{ const p=rp(t,R); d.position.set(p[0],.1,p[1]); d.rotation.set(R()*3,R()*3,0); },false);
+    } else if(t.k==='stakes'){
+      scatter(new THREE.BoxGeometry(.14,2.1,.14),lam(0x6a4a2a),Math.round(area*.6),(d)=>{ const p=rp(t,R); d.position.set(p[0],.7,p[1]); d.rotation.x=-.8; });
+    } else if(t.k==='wagons'){
+      const n=Math.floor((t.x1-t.x0)/5.2), zc=(t.z0+t.z1)/2;
+      scatter(new THREE.BoxGeometry(4.2,1.6,2.2),lam(0x7a5230),n,(d,i)=>{ d.position.set(t.x0+2.6+i*5.2,1.5,zc); });
+      scatter(new THREE.BoxGeometry(4.4,1.1,2.4),lam(0xe6dcc0),n,(d,i)=>{ d.position.set(t.x0+2.6+i*5.2,2.8,zc); });
+      scatter(new THREE.CylinderGeometry(.75,.75,.25,10),lam(0x4a3320),n*2,(d,i)=>{ d.position.set(t.x0+2.6+((i/2)|0)*5.2+(i%2?1.3:-1.3),.75,zc+1.2); d.rotation.x=Math.PI/2; });
+    }
+  }
+  if(L.wall&&L.wall.cliff){ const W=L.wall, g=W.gaps[0], col=new THREE.MeshLambertMaterial({color:gc.clone().multiplyScalar(.68),flatShading:true});
+    for(const sd of [-1,1]) scatter(new THREE.DodecahedronGeometry(1,0),col,48,(d)=>{ const fx=R(), x=g.x+sd*(g.w/2+3+fx*44), z=W.z-W.t+R()*W.t*2;
+      d.position.set(x,2+fx*5,z); d.scale.set(5+R()*5,7+fx*12+R()*5,5+R()*5); d.rotation.set(R()*.5,R()*3,R()*.5); }); }
+}
+// small things that make a field look lived in: grass tufts, stones, bushes
+function dressField(L,R){
+  const gc=new THREE.Color(L.theme.ground), dry=L.map==='steppe'||L.map==='desert'||L.map==='pass'||L.map==='highland';
+  const dryAt=(x,z)=>wetAt(x,z)>.2||(L.terrain||[]).some(t=>(t.k==='marsh'||t.k==='trench')&&shapeK(t,x,z,1)>0);
+  scatter(new THREE.ConeGeometry(.16,.7,4),lam(gc.clone().multiplyScalar(dry?1.22:1.38).getHex()),dry?600:1500,(d)=>{ const x=(R()*2-1)*100, z=(R()*2-1)*84;
+    d.position.set(x,.3,z); const k=dryAt(x,z)?0:1; d.scale.set((1+R())*k,(.6+R()*1.3)*k,(1+R())*k); d.rotation.y=R()*3; },false);
+  scatter(new THREE.DodecahedronGeometry(.5,0),new THREE.MeshLambertMaterial({color:0x8a8478,flatShading:true}),dry?110:50,(d)=>{ const x=(R()*2-1)*95, z=(R()*2-1)*80, k=.3+R()*.9;
+    d.position.set(x,k*.2,z); d.scale.set(k,k*.6,k); d.rotation.set(R()*3,R()*3,0); });
+  if(!dry) scatter(new THREE.IcosahedronGeometry(.9,0),new THREE.MeshLambertMaterial({color:gc.clone().multiplyScalar(.78),flatShading:true}),50,(d)=>{
+    let x,z,n=0; do{ x=(R()*2-1)*104; z=(R()*2-1)*86; }while(n++<20&&((Math.abs(x)<60&&z>8&&z<46)||dryAt(x,z))); const k=.6+R()*.9;
+    d.position.set(x,k*.45,z); d.scale.set(k*1.3,k,k*1.3); });
+}
+// drop single props onto the rolling ground
+function settle(){
+  for(const o of world.children){
+    if(o.userData.g||o.isInstancedMesh||o.position.y>=14) continue;
+    if(o.isMesh){ if(!o.geometry.boundingSphere) o.geometry.computeBoundingSphere(); if(o.geometry.boundingSphere.radius*Math.max(o.scale.x,o.scale.y,o.scale.z)>30) continue; }
+    else if(!o.isLight) continue;
+    if(wetAt(o.position.x,o.position.z)>.5) continue;
+    o.position.y+=HT(o.position.x,o.position.z);
+  }
+}
+const birds=[];
+function extras(L,R){
+  birds.length=0; const bm=lam(0x1c1a18);
+  for(let i=0;i<7;i++){ const m=new THREE.Mesh(new THREE.BoxGeometry(.9,.05,.28),bm); world.add(m); birds.push({m,r:18+R()*30,a:R()*6.28,sp:.22+R()*.25,y:15+R()*8,cx:(R()-.5)*50,cz:(R()-.5)*40}); }
+  if(!L.wall&&L.map!=='vienna'){ // the enemy camp
+    const n=14, cone=new THREE.ConeGeometry(2.3,3.3,8), pts=Array.from({length:n},()=>[(R()*2-1)*52,-50-R()*10]);
+    scatter(cone,lam(L.foeMain),n/2,(d,i)=>{ d.position.set(pts[i][0],1.65,pts[i][1]); });
+    scatter(cone.clone(),lam(0xe8e0cc),n/2,(d,i)=>{ const p=pts[i+n/2]; d.position.set(p[0],1.65,p[1]); d.scale.setScalar(.85); });
+    const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,9,6),lam(0x5a3d22)); pole.position.set(0,4.5,-48); pole.castShadow=true; world.add(pole);
+    const flag=new THREE.Mesh(new THREE.BoxGeometry(3.6,2,.08),lam(L.foeMain)); flag.position.set(1.9,7.8,-48); flag.castShadow=true; world.add(flag);
+  }
+}
+function terrainLegend(L){
+  const ks=[...new Set((L.terrain||[]).map(t=>t.k))]; if(!ks.length&&!L.wall) return '';
+  return '<h4 style="margin-top:8px;cursor:default">Terrain</h4>'+ks.map(k=>'<p class="tl">'+TINFO[k]+'</p>').join('')
+    +(L.wall?'<p class="tl">'+(L.wall.cliff?'<b>Cliffs</b> — the pass is the only way through':'<b>Walls</b> — defenders hold the breaches until you approach')+'</p>':'');
+}
+function buildMap(L){
+  clearGroup(world);
+  const th=L.theme, R=mulberry(L.seed);
+  const sky=new THREE.Color(th.sky).lerp(new THREE.Color(0x1a1424),.55); scene.background=sky; scene.fog=new THREE.Fog(sky,th.fogNear||130,th.fogFar||430);
+  hemi.groundColor.set(th.ground).multiplyScalar(.3);
+  buildGround(L,R);
+  camp(R); MAPS[L.map](R,L); buildTerrain(L,R); extras(L,R); dressField(L,R); settle();
+}
+
+/* deployment zone + placement ghosts (not part of world) */
+const zoneG=new THREE.Group(); scene.add(zoneG);
+{ const w=ZONE.x1-ZONE.x0, d=ZONE.z1-ZONE.z0;
+  const p=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshBasicMaterial({color:0xfff2a8,transparent:true,opacity:.16,depthWrite:false,depthTest:false}));
+  p.rotation.x=-Math.PI/2; p.position.set((ZONE.x0+ZONE.x1)/2,.08,(ZONE.z0+ZONE.z1)/2); zoneG.add(p);
+  const e=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(w,d)),new THREE.LineBasicMaterial({color:0xfff2a8,depthTest:false}));
+  e.rotation.x=-Math.PI/2; e.position.copy(p.position); e.position.y=.1; zoneG.add(e); }
+const ghostOk=new THREE.MeshBasicMaterial({color:0x4cff6a,transparent:true,opacity:.8,depthWrite:false});
+const ghostNo=new THREE.MeshBasicMaterial({color:0xff4040,transparent:true,opacity:.8,depthWrite:false});
+const ringGeo=new THREE.RingGeometry(.72,1,20); ringGeo.rotateX(-Math.PI/2);
+const ghosts=Array.from({length:10},()=>{ const m=new THREE.Mesh(ringGeo,ghostOk); m.visible=false; m.position.y=.12; scene.add(m); return m; });
+
+/* =====================================================================
+   SOUND (tiny synthesized effects)
+   ===================================================================== */
+let AC=null, muted=false, noiseBuf=null; const lastS={};
+function audioInit(){ if(AC) return; try{ AC=new (window.AudioContext||window.webkitAudioContext)(); noiseBuf=AC.createBuffer(1,AC.sampleRate,AC.sampleRate); const d=noiseBuf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; }catch(e){} }
+function sfx(k){
+  if(muted||!AC||headless) return; const t=AC.currentTime; if(lastS[k]&&t-lastS[k]<.06) return; lastS[k]=t;
+  const g=AC.createGain(); g.connect(AC.destination);
+  if(k==='hit'||k==='boom'||k==='gun'){
+    const s=AC.createBufferSource(); s.buffer=noiseBuf; const f=AC.createBiquadFilter(); f.type='lowpass'; f.frequency.value=k==='hit'?1100:k==='gun'?800:260;
+    const dur=k==='hit'?.07:k==='gun'?.16:.55; g.gain.setValueAtTime(k==='hit'?.07:k==='gun'?.13:.4,t); g.gain.exponentialRampToValueAtTime(.001,t+dur);
+    s.connect(f); f.connect(g); s.start(t,Math.random()*.5,dur);
+  } else if(k==='drum'){
+    const o=AC.createOscillator(); o.type='sine'; o.frequency.setValueAtTime(84,t); o.frequency.exponentialRampToValueAtTime(40,t+.2);
+    g.gain.setValueAtTime(.2,t); g.gain.exponentialRampToValueAtTime(.001,t+.27); o.connect(g); o.start(t); o.stop(t+.29);
+  } else if(k==='shoot'){
+    const o=AC.createOscillator(); o.type='triangle'; o.frequency.setValueAtTime(900,t); o.frequency.exponentialRampToValueAtTime(260,t+.09);
+    g.gain.setValueAtTime(.035,t); g.gain.exponentialRampToValueAtTime(.001,t+.1); o.connect(g); o.start(t); o.stop(t+.11);
+  } else {
+    const notes=k==='win'?[392,523,659,784]:[330,294,247,196];
+    notes.forEach((f,i)=>{ const o=AC.createOscillator(), gg=AC.createGain(); o.type='sawtooth'; o.frequency.value=f; gg.gain.setValueAtTime(.0001,t+i*.18); gg.gain.linearRampToValueAtTime(.07,t+i*.18+.03); gg.gain.exponentialRampToValueAtTime(.001,t+i*.18+.45); o.connect(gg); gg.connect(AC.destination); o.start(t+i*.18); o.stop(t+i*.18+.5); });
+  }
+}
+
+/* =====================================================================
+   UNITS / SIMULATION
+   ===================================================================== */
+/* Morale: every troop has nerve (0-100). It drops when the troop is hurt, struck from behind, outnumbered, sees friends
+   fall or loses its commander. At zero the troop routs and runs for its camp; it may rally if it gets clear. */
+const MOR={sword:80,spear:80,shield:92,archer:64,crossbow:70,musket:86,cavalry:86,harcher:72,siege:100,hero:100};
+let n0=[1,1], fled=[0,0], said={}, toastT=0;
+function toast(msg){ if(headless) return; const el=$('#toast'); el.textContent=msg; el.classList.remove('hide'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.add('hide'),3800); }
+function mind(u,h,frac){
+  if(u.type==='hero'||u.type==='siege'){ u.mor=100; return; }
+  let en=0, al=0, near=1e9;
+  for(const o of units){ if(!o.alive||o===u||o.rout) continue; const d=Math.hypot(o.x-u.x,o.z-u.z);
+    if(o.team===u.team){ if(d<7) al++; } else { if(d<near) near=d; if(d<7) en++; } }
+  if(en>(al+1)*2) u.mor-=5;                               // badly outnumbered where it stands
+  if(frac<.35) u.mor-=2.5;                                // the army is collapsing
+  if(near>12) u.mor+=u.rout?5:3;                          // breathing space
+  if(h&&Math.hypot(h.x-u.x,h.z-u.z)<14) u.mor+=u.rout?6:3; // the commander is near
+  u.mor=clamp(u.mor,-20,100);
+  if(!u.rout&&u.mor<=0){ u.rout=true; u.hold=false; u.way=null;
+    for(const o of units) if(o.alive&&o.team===u.team&&o!==u&&Math.hypot(o.x-u.x,o.z-u.z)<8) o.mor-=5; }   // panic spreads
+  else if(u.rout&&u.mor>=35&&near>10) u.rout=false;       // rallied
+}
+const stMat={hold:new THREE.MeshBasicMaterial({color:0x4aa3ff,transparent:true,opacity:.9,depthWrite:false}),
+  flank:new THREE.MeshBasicMaterial({color:0xff9a2a,transparent:true,opacity:.9,depthWrite:false}),
+  guard:new THREE.MeshBasicMaterial({color:0x5fd35f,transparent:true,opacity:.9,depthWrite:false})};
+function setStance(u,st){
+  u.st=st; u.hold=st==='hold'||st==='guard'; u.firm=u.hold;
+  if(!u.mark){ u.mark=new THREE.Mesh(ringGeo,stMat.hold); u.mark.position.y=.1; u.mark.scale.setScalar((u.T.radius+.4)/u.base); u.mesh.add(u.mark); }
+  u.mark.visible=st!=='charge'; if(st!=='charge') u.mark.material=stMat[st];
+}
+function spawn(type,team,x,z,hold,st){
+  const T=TYPES[type];
+  const u={type,T,team,x,z,hp:T.hp,cd:Math.random()*T.cd,tgt:null,think:Math.random()*.4,alive:true,kx:0,kz:0,
+           face:team?0:Math.PI,walk:Math.random()*6,atk:0,run:0,hold:!!hold,buff:1,moving:false,hit:0,ph:Math.random()*6,
+           st:'charge',firm:false,way:null,mor:MOR[type]||80,rout:false,ts:1,tnc:false,tcov:false,tstk:false,th:0,dust:Math.random()};
+  u.mesh=buildUnit(type,team); u.base=u.mesh.scale.x; u.mesh.position.set(x,0,z); u.mesh.rotation.y=u.face;
+  unitsG.add(u.mesh); units.push(u); terr(u); if(st&&st!=='charge') setStance(u,st); return u;
+}
+function armOrders(){
+  n0=[0,0]; fled=[0,0]; said={}; for(const u of units) n0[u.team]++;
+  let ez=0,n=0; for(const u of units) if(u.team){ ez+=u.z; n++; } ez=n?ez/n:-20;
+  for(const u of units){ if(u.mark) u.mark.visible=false; if(!u.team&&u.st==='flank'&&!LV.wall) u.way=[(u.x>=0?1:-1)*54,clamp(ez,-40,40)]; }
+}
+function clearUnits(){
+  for(const u of units) unitsG.remove(u.mesh); for(const c of corpses) unitsG.remove(c.mesh);
+  for(const p of projs) fxG.remove(p.mesh); for(const p of parts) fxG.remove(p.m);
+  units=[]; corpses=[]; projs=[]; parts=[];
+}
+function spawnArmy(L){
+  for(const f of L.army){ const T=TYPES[f.t], sp=T.radius*2+.9, cols=f.cols||f.n;
+    for(let k=0;k<f.n;k++){ const c=k%cols, r=(k/cols)|0, inRow=Math.min(cols,f.n-r*cols); spawn(f.t,1,f.x+(c-(inRow-1)/2)*sp,f.z-r*sp,f.hold); } }
+}
+
+function pickTarget(u){
+  let best=null,bs=1e9; const T=u.T;
+  for(const o of units){ if(!o.alive||o.team===u.team) continue;
+    let d=Math.hypot(o.x-u.x,o.z-u.z);
+    if(u.type==='cavalry'&&o.T.ranged) d*=.55;
+    if(o.rout) d*=1.5;
+    if(T.minRange&&d<T.minRange) d+=200;
+    if(d<bs){bs=d;best=o;} }
+  return best;
+}
+function mult(aType,t,buff,kind){
+  let m=buff; const b=t.type;
+  if(aType==='spear'&&(b==='cavalry'||b==='harcher')) m*=2.5;
+  if(aType==='sword'&&b==='spear') m*=1.4;
+  if(aType==='cavalry'&&t.T.ranged) m*=1.5;
+  if(b==='shield'){ if(kind==='arrow') m*=.3; else if(kind==='bolt') m*=.65; else if(kind==='ball') m*=.85; }
+  if(b==='hero'&&kind==='stone') m*=.6;
+  return m;
+}
+function hurt(t,dmg,nx,nz,knock){
+  if(!t.alive) return;
+  if(knock>0&&nx*Math.sin(t.face)+nz*Math.cos(t.face)>.35){ dmg*=1.25; t.mor-=5; }      // struck from behind
+  const d=dmg*0.22; t.hp-=d; t.hit=1; if(!t.firm) t.hold=false; t.kx+=nx*knock; t.kz+=nz*knock;
+  t.mor-=d/t.T.hp*45*(t.firm?.7:1)+(knock>=13?10:0);
+  if(t.hp<=0){ t.alive=false; corpses.push({mesh:t.mesh,t:0,dir:Math.random()<.5?-1:1,side:t.type==='cavalry'||t.type==='harcher'||t.type==='siege',base:t.base,gy:HT(t.x,t.z)});
+    if(!headless) puff(t.x,1,t.z,4,0xcbb892,2.5,2);
+    const hero=t.type==='hero';
+    for(const o of units){ if(!o.alive) continue; const near=Math.hypot(o.x-t.x,o.z-t.z)<9;
+      if(o.team===t.team) o.mor-=(hero?30:0)+(near?6:0); else o.mor=Math.min(100,o.mor+(hero?15:0)+(near?4:0)); }
+    if(hero) toast(t.team?LV.foeHero+' has fallen — the enemy wavers!':LV.hero+' has fallen — your army wavers!');
+  }
+}
+function goal(u,tx,tz){
+  const W=LV.wall; if(!W) return [tx,tz];
+  const half=W.t||1.5, r=u.T.radius, s=u.z-W.z, st=tz-W.z;
+  if(Math.abs(s)<half+r) return [tx,tz];                 // already inside a gap / the pass
+  if(s*st>0&&Math.abs(st)>=half) return [tx,tz];         // target on our side
+  let best=null,bc=1e9; for(const g of W.gaps){ const c=Math.abs(u.x-g.x)+Math.abs(tx-g.x); if(c<bc){bc=c;best=g;} }
+  const side=s>=0?1:-1, inner=Math.max(.3,best.w/2-r-.5), off=u.x-best.x;
+  if(Math.abs(off)>inner) return [best.x+clamp(off,-inner,inner)*.6, W.z+side*(half+r+1.2)];
+  return [u.x, W.z-side*(half+r+1.5)];
+}
+function wallFix(u,W){
+  const r=u.T.radius, half=(W.t||1.5)+r, dz=u.z-W.z; if(Math.abs(dz)>=half) return;
+  for(const g of W.gaps){ const o=u.x-g.x; if(Math.abs(o)<g.w/2){ const lim=Math.max(.2,g.w/2-r*.8); u.x=g.x+clamp(o,-lim,lim); return; } }
+  u.z=W.z+(dz>=0?half:-half);
+}
+function fire(u,t,d){
+  const kind=u.T.ranged, stone=kind==='stone', ball=kind==='ball', miss=!stone&&Math.random()<(ball?.25:.18)+(t.tcov?.3:0);
+  const spd=stone?27:ball?95:kind==='bolt'?52:38;
+  const off=stone?2.4:miss?3:0, a=Math.random()*6.283, r=Math.random()*off;
+  const p={kind,team:u.team,srcType:u.type,buff:u.buff*(1+Math.min(.2,u.th*.04)),dmg:u.T.dmg,tgt:(stone||miss)?null:t,sx:u.x,sz:u.z,sy:(stone?2.4:1.5)+HT(u.x,u.z),
+           tx:t.x+Math.cos(a)*r,tz:t.z+Math.sin(a)*r,t:0,dur:Math.max(.15,d/spd),arc:stone?d*.3:ball?d*.01:kind==='bolt'?d*.05:d*.16,splash:u.T.splash};
+  if(!headless){
+    if(stone){ p.mesh=new THREE.Mesh(SPH,M.iron); p.mesh.scale.setScalar(.38); }
+    else if(ball){ p.mesh=new THREE.Mesh(BOX,M.iron); p.mesh.scale.set(.1,.1,.35); }
+    else { p.mesh=new THREE.Mesh(BOX,M.wood); p.mesh.scale.set(.06,.06,kind==='bolt'?.7:1.0); }
+    p.mesh.position.set(p.sx,p.sy,p.sz); fxG.add(p.mesh);
+    if(stone&&LV.siege==='cannon'){ puff(u.x+Math.sin(u.face)*2,1.4,u.z+Math.cos(u.face)*2,8,0x9a9a9a,3,2.5); sfx('boom'); } else if(ball){ puff(u.x+Math.sin(u.face)*1.4,1.5,u.z+Math.cos(u.face)*1.4,3,0xb0b0b0,1.5,1.5); sfx('gun'); } else sfx('shoot');
+  }
+  projs.push(p);
+}
+function puff(x,y,z,n,col,sp,up){
+  if(headless||parts.length>260) return;
+  for(let i=0;i<n;i++){ const m=new THREE.Mesh(BOX,pMat(col)); const s=.18+Math.random()*.25; m.scale.setScalar(s); m.position.set(x,y,z); fxG.add(m);
+    parts.push({m,s,vx:(Math.random()-.5)*sp,vy:Math.random()*up+up*.4,vz:(Math.random()-.5)*sp,life:.6+Math.random()*.5,max:1.1}); }
+}
+const pMats={}; const pMat=c=>pMats[c]||(pMats[c]=lam(c));
+
+const H=1/60;
+function step(dt){
+  simT+=dt;
+  const heroes=[null,null]; let alive=[0,0];
+  for(const u of units) if(u.alive){ alive[u.team]++; if(u.type==='hero') heroes[u.team]=u; }
+  const releaseAll=simT>120;
+  for(const u of units){
+    if(!u.alive) continue; const T=u.T;
+    u.cd-=dt; u.think-=dt; u.atk=Math.max(0,u.atk-dt*3.2); u.hit=Math.max(0,u.hit-dt*5); u.moving=false;
+    if(releaseAll) u.hold=false;
+    if(u.think<=0||!u.tgt||!u.tgt.alive){
+      u.think=.4+Math.random()*.2; u.tgt=pickTarget(u); terr(u); mind(u,heroes[u.team],alive[u.team]/(n0[u.team]||1));
+      const h=heroes[u.team]; u.buff=(h&&h!==u&&Math.hypot(h.x-u.x,h.z-u.z)<14)?1.2:1;
+    }
+    if(u.rout){                                           // running for the camp
+      if(u.tstk) hurt(u,42*dt,0,0,0);
+      const dirz=u.team?-1:1, rs=T.speed*MOVE*u.ts*1.15, e=u.tgt, fx=e?clamp((u.x-e.x)/12,-.5,.5):0, fl=Math.hypot(fx,1);
+      u.x+=fx/fl*rs*dt; u.z+=dirz/fl*rs*dt; u.moving=true;
+      let da=Math.atan2(fx,dirz)-u.face; da=Math.atan2(Math.sin(da),Math.cos(da)); u.face+=da*Math.min(1,dt*10);
+      u.x+=u.kx*dt; u.z+=u.kz*dt; const k2=Math.exp(-7*dt); u.kx*=k2; u.kz*=k2;
+      if(u.alive&&Math.abs(u.z)>=FIELD.hz-.8){ u.alive=false; fled[u.team]++; unitsG.remove(u.mesh); }
+      continue;
+    }
+    const t=u.tgt;
+    if(u.tstk) hurt(u,42*dt,0,0,0);                       // riding through stakes
+    if(t&&u.alive){
+      const dx=t.x-u.x, dz=t.z-u.z, d=Math.hypot(dx,dz)||.001;
+      const sp=T.speed*MOVE*u.ts*(u.th>.8?.85:1);
+      const reach=T.ranged?T.range*(1+Math.min(.3,u.th*.065)):T.range+t.T.radius;
+      let want=Math.atan2(dx,dz), busy=false;
+      if(u.hold&&d<(u.firm?(u.st==='guard'?15:T.ranged?7:9):(T.ranged?T.range:18))) u.hold=false;
+      const tooClose=T.minRange&&d<T.minRange;
+      if(u.way){                                          // flank order: ride wide first
+        const wx=u.way[0]-u.x, wz=u.way[1]-u.z, wd=Math.hypot(wx,wz);
+        if(wd<3||d<10) u.way=null;
+        else { u.x+=wx/wd*sp*dt; u.z+=wz/wd*sp*dt; u.moving=true; u.run+=dt; want=Math.atan2(wx,wz); busy=true; }
+      }
+      if(!busy){
+        if(d<=reach&&!tooClose){
+          if(u.cd<=0){
+            u.cd=T.cd*(.88+Math.random()*.24); u.atk=1;
+            if(T.ranged) fire(u,t,d);
+            else {
+              let m=mult(u.type,t,u.buff), kb=3; const dh=u.th-t.th;
+              if(dh>1) m*=1.15; else if(dh<-1) m*=.8;       // high ground
+              if(u.type==='cavalry'&&u.run>1&&t.type!=='spear'&&!u.tnc&&dh>-1){ m*=2; kb=13; }
+              if(u.type==='hero') kb=8;
+              u.run=0; hurt(t,T.dmg*m,dx/d,dz/d,kb); sfx('hit');
+            }
+          }
+        } else if(!tooClose&&!u.hold){
+          const [gx,gz]=goal(u,t.x,t.z), ex=gx-u.x, ez=gz-u.z, ed=Math.hypot(ex,ez)||1;
+          u.x+=ex/ed*sp*dt; u.z+=ez/ed*sp*dt; u.moving=true; u.run+=dt; want=Math.atan2(ex,ez);
+        }
+        if(T.kite&&!u.hold&&!t.T.ranged&&d<9&&d<=reach){ u.x-=dx/d*sp*dt; u.z-=dz/d*sp*dt; u.moving=true; want=Math.atan2(-dx,-dz); }
+      }
+      let da=want-u.face; da=Math.atan2(Math.sin(da),Math.cos(da)); u.face+=da*Math.min(1,dt*10);
+    }
+    u.x+=u.kx*dt; u.z+=u.kz*dt; const k=Math.exp(-7*dt); u.kx*=k; u.kz*=k;
+  }
+  // separation
+  const n=units.length;
+  for(let i=0;i<n;i++){ const a=units[i]; if(!a.alive) continue;
+    for(let j=i+1;j<n;j++){ const b=units[j]; if(!b.alive) continue;
+      const dx=b.x-a.x, dz=b.z-a.z, rr=a.T.radius+b.T.radius, d2=dx*dx+dz*dz;
+      if(d2<rr*rr){ let d=Math.sqrt(d2), nx,nz; if(d<.001){ const an=Math.random()*6.28; nx=Math.cos(an); nz=Math.sin(an); d=0; } else { nx=dx/d; nz=dz/d; }
+        const p=(rr-d)/2; a.x-=nx*p; a.z-=nz*p; b.x+=nx*p; b.z+=nz*p; } } }
+  const W=LV.wall;
+  for(const u of units){ if(!u.alive) continue; if(W) wallFix(u,W); u.x=clamp(u.x,-FIELD.hx,FIELD.hx); u.z=clamp(u.z,-FIELD.hz,FIELD.hz); }
+  // projectiles
+  for(let i=projs.length-1;i>=0;i--){
+    const p=projs[i]; p.t+=dt/p.dur;
+    if(p.tgt&&p.tgt.alive){ p.tx=p.tgt.x; p.tz=p.tgt.z; }
+    if(p.t>=1){
+      if(p.kind==='stone'){
+        for(const o of units){ if(!o.alive||o.team===p.team) continue; const dx=o.x-p.tx, dz=o.z-p.tz, d=Math.hypot(dx,dz);
+          if(d<p.splash+o.T.radius){ const f=1-.55*Math.min(1,d/p.splash); hurt(o,p.dmg*f*mult(p.srcType,o,p.buff,'stone'),d>.01?dx/d:0,d>.01?dz/d:0,11*f); } }
+        if(!headless){ puff(p.tx,.4+HT(p.tx,p.tz),p.tz,12,0xa8946a,7,5); sfx('boom'); }
+      } else if(p.tgt&&p.tgt.alive){
+        const o=p.tgt, dx=o.x-p.sx, dz=o.z-p.sz, d=Math.hypot(dx,dz)||1;
+        hurt(o,p.dmg*mult(p.srcType,o,p.buff,p.kind),dx/d,dz/d,p.kind==='arrow'?1.5:4); sfx('hit');
+      }
+      if(p.mesh) fxG.remove(p.mesh); projs.splice(i,1); continue;
+    }
+    if(p.mesh){ const x=p.sx+(p.tx-p.sx)*p.t, z=p.sz+(p.tz-p.sz)*p.t, y=p.sy+(1+HT(p.tx,p.tz)-p.sy)*p.t+p.arc*4*p.t*(1-p.t);
+      p.mesh.lookAt(x,y,z); p.mesh.position.set(x,y,z); }
+  }
+  // end of battle
+  if(state==='battle'){
+    alive=[0,0]; let hp=[0,0]; for(const u of units) if(u.alive){ alive[u.team]++; hp[u.team]+=u.hp; }
+    if(alive[0]===0||alive[1]===0) finish(alive[1]===0&&alive[0]>0);
+    else if(simT>480) finish(hp[0]/hp0[0]>hp[1]/hp0[1]);
+  }
+}
+
+/* visuals that run every frame */
+function visuals(dt,t){
+  for(const u of units){
+    if(!u.alive) continue; const m=u.mesh, T=u.T;
+    if(u.moving) u.walk+=dt*T.speed*(m.userData.h?1.0:1.7);
+    const y=(state==='end'&&u.team===winner&&u.type!=='siege')?Math.abs(Math.sin(t*7+u.ph))*.5:0, gh=HT(u.x,u.z);
+    if(u.moving&&(u.dust-=dt)<0){ u.dust=.35+Math.random()*.5; puff(u.x,.15+gh,u.z,1,LV.theme.ground,1.2,.9); }
+    m.position.set(u.x,y+gh,u.z); m.rotation.y=u.face;
+    animate(u,dt,t); m.scale.setScalar(u.base*(1+u.hit*.06));
+    if(u.rout&&!u.flag){ u.flag=new THREE.Group(); u.flag.add(box(.04,.9,.04,M.wood,0,.45,0)); u.flag.add(box(.5,.34,.03,teamM[0].accent,.27,.72,0)); u.flag.position.y=m.userData.h?3.0:2.2; m.add(u.flag); }
+    if(u.flag) u.flag.visible=u.rout;
+  }
+  for(const b of birds){ b.a+=dt*b.sp; b.m.position.set(b.cx+Math.cos(b.a)*b.r,b.y+Math.sin(t*2+b.r)*.8,b.cz+Math.sin(b.a)*b.r); b.m.rotation.y=-b.a; b.m.scale.z=1+.6*Math.sin(t*9+b.r); }
+  for(const f of fires){ const k=.8+.2*Math.sin(t*11+f.ph)+.1*Math.sin(t*23+f.ph*2); f.l.intensity=420*k; f.fl.scale.set(1,k,1); }
+  for(let i=corpses.length-1;i>=0;i--){
+    const c=corpses[i]; c.t+=dt; const k=Math.min(1,c.t/.45), e=k*k; c.mesh.scale.setScalar(c.base);
+    if(c.side) c.mesh.rotation.z=e*Math.PI/2*c.dir; else c.mesh.rotation.x=-e*Math.PI/2*c.dir;
+    c.mesh.position.y=(c.gy||0)+(c.side?e*.3:e*.2);
+    if(c.t>7) c.mesh.position.y-=(c.t-7)*.6;
+    if(c.t>10){ unitsG.remove(c.mesh); corpses.splice(i,1); }
+  }
+  for(let i=parts.length-1;i>=0;i--){
+    const p=parts[i]; p.life-=dt; p.vy-=9*dt; p.m.position.x+=p.vx*dt; p.m.position.y=Math.max(.05,p.m.position.y+p.vy*dt); p.m.position.z+=p.vz*dt;
+    p.m.scale.setScalar(p.s*Math.max(.05,p.life/p.max)); if(p.life<=0){ fxG.remove(p.m); parts.splice(i,1); }
+  }
+}
+
+/* =====================================================================
+   DEPLOYMENT
+   ===================================================================== */
+const ray=new THREE.Raycaster(), mouse=new THREE.Vector2(), groundPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0), hitV=new THREE.Vector3();
+let mouseOn=false;
+function groundPoint(){ ray.setFromCamera(mouse,camera); let h=0,p=null;
+  for(let i=0;i<4;i++){ groundPlane.constant=-h; p=ray.ray.intersectPlane(groundPlane,hitV); if(!p) return null; h=HT(p.x,p.z); } return p; }
+let curSt='charge';
+function canPlace(type,x,z,ignoreGold){
+  const T=TYPES[type];
+  if(x<ZONE.x0+T.radius||x>ZONE.x1-T.radius||z<ZONE.z0+T.radius||z>ZONE.z1-T.radius) return false;
+  if(!ignoreGold&&gold<T.cost) return false;
+  let mine=0;
+  for(const u of units){ if(u.team) continue; mine++; if(T.limit&&u.type===type) return false;
+    if(Math.hypot(u.x-x,u.z-z)<u.T.radius+T.radius+.12) return false; }
+  return mine<90;
+}
+function place(type,x,z,st){ if(!canPlace(type,x,z)) return false; spawn(type,0,x,z,false,st); gold-=TYPES[type].cost; return true; }
+function orderAtCursor(){
+  const p=groundPoint(); if(!p) return; let best=null,bd=2.8;
+  for(const u of units){ if(u.team) continue; const d=Math.hypot(u.x-p.x,u.z-p.z); if(d<bd){bd=d;best=u;} }
+  if(best) setStance(best,curSt);
+}
+function toolAtCursor(){ if(tool==='remove') removeAtCursor(); else orderAtCursor(); }
+function squadPos(type,x,z,n){
+  const sp=TYPES[type].radius*2+.7, cols=Math.min(n,5), out=[];
+  for(let k=0;k<n;k++) out.push([x+((k%cols)-(cols-1)/2)*sp, z+((k/cols)|0)*sp]);
+  return out;
+}
+function tryPlaceAtCursor(){
+  const p=groundPoint(); if(!p) return;
+  for(const u of units) if(!u.team&&Math.hypot(u.x-p.x,u.z-p.z)<u.T.radius+.35){ if(u.st!==curSt){ setStance(u,curSt); sfx('shoot'); } return; }   // tapped one of your troops: give it the current order
+  const n=TYPES[selType].limit?1:squad; let any=false;
+  for(const [x,z] of squadPos(selType,p.x,p.z,n)) any=place(selType,x,z,curSt)||any;
+  if(any){ sfx('shoot'); refreshDeploy(); }
+}
+function removeAtCursor(){
+  const p=groundPoint(); if(!p) return; let best=null,bd=2.6;
+  for(const u of units){ if(u.team) continue; const d=Math.hypot(u.x-p.x,u.z-p.z); if(d<bd){bd=d;best=u;} }
+  if(best){ unitsG.remove(best.mesh); units.splice(units.indexOf(best),1); gold+=best.T.cost; refreshDeploy(); }
+}
+function clearPlayer(){ units=units.filter(u=>{ if(!u.team){ unitsG.remove(u.mesh); return false; } return true; }); gold=LV.gold; }
+function autoDeploy(){
+  clearPlayer(); let g=LV.gold; const list=[];
+  const buy=t=>{ if(g>=TYPES[t].cost){ g-=TYPES[t].cost; list.push(t); return true; } return false; };
+  buy('hero'); if(LV.wall||LV.gold>=3000) buy('siege');
+  const cyc=['spear','sword','archer','shield','spear','musket','sword','cavalry','crossbow','harcher'].filter(avail); let i=0,f=0;
+  while(f<cyc.length){ if(buy(cyc[i%cyc.length])) f=0; else f++; i++; }
+  const G={front:[],mid:[],back:[],cav:[],siege:[],hero:[]};
+  for(const t of list) (t==='shield'||t==='spear'?G.front:t==='sword'?G.mid:(t==='cavalry'||t==='harcher')?G.cav:t==='siege'?G.siege:t==='hero'?G.hero:G.back).push(t);
+  const row=(arr,z,sp,max=24)=>arr.forEach((t,k)=>{ const r=(k/max)|0, inRow=Math.min(max,arr.length-r*max); place(t,((k%max)-(inRow-1)/2)*sp,z+r*sp); });
+  G.front.sort(); row(G.front,14,1.95); row(G.mid,18.4,1.95); row(G.hero,22,2); row(G.back,25,1.95); row(G.siege,31,5);
+  G.cav.forEach((t,k)=>{ const s=k%2?1:-1, j=(k/2)|0; place(t,s*(36+(j%3)*2.7),15+((j/3)|0)*2.8,LV.wall?'charge':'flank'); });
+  refreshDeploy();
+}
+function updateGhosts(){
+  const show=state==='deploy'&&mouseOn; let p=show?groundPoint():null;
+  const n=p?(TYPES[selType].limit?1:squad):0, pos=p?squadPos(selType,p.x,p.z,n):[];
+  let spent=0;
+  ghosts.forEach((g,i)=>{ if(i<pos.length){ const T=TYPES[selType]; g.visible=true; g.position.x=pos[i][0]; g.position.z=pos[i][1]; g.position.y=.12+HT(pos[i][0],pos[i][1]); g.scale.setScalar(T.radius+.25);
+      const ok=canPlace(selType,pos[i][0],pos[i][1],true)&&gold-spent>=T.cost; if(ok) spent+=T.cost; g.material=ok?ghostOk:ghostNo; } else g.visible=false; });
+}
+
+/* =====================================================================
+   FLOW / UI
+   ===================================================================== */
+const show=(sel,on)=>$(sel).classList.toggle('hide',!on);
+function setUI(){
+  show('#menu',state==='menu'); show('#story',state==='story');
+  show('#deploy',state==='deploy'); show('#hint',state==='deploy'); show('#scout',state==='deploy'); show('#info',state==='deploy');
+  show('#top',state==='deploy'||state==='battle'||state==='end');
+  show('#bars',state!=='deploy'); show('#bPause',state==='battle'); show('#bSpeed',state==='battle'); show('#bRetry',state==='battle'||state==='end');
+  const inGame=state==='deploy'||state==='battle'||state==='end'; show('#stickL',inGame); show('#stickR',inGame); show('#zoomB',inGame); document.body.classList.toggle('dep',state==='deploy'); zoneG.visible=state==='deploy'; if(state!=='end') show('#end',false);
+}
+const starStr=n=>'★'.repeat(n)+'☆'.repeat(3-n);
+function renderMenu(){
+  const el=$('#levels'); el.innerHTML='';
+  LEVELS.forEach((L,i)=>{ const locked=i>prog.unlocked, b=document.createElement('button'); b.className='lv'+(locked?' locked':'');
+    b.innerHTML=`<div class="num">${['I','II','III','IV','V','VI','VII','VIII','IX','X'][i]}</div><div class="nm">${L.name}</div><div class="yr">${L.year}</div><div class="vs">${L.you}<br>vs<br>${L.foe}</div><div class="st">${locked?'🔒':starStr(prog.stars[i]||0)}</div>`;
+    if(!locked) b.onclick=()=>{ audioInit(); openStory(i); }; el.appendChild(b); });
+}
+function loadLevel(i,keep){
+  cur=i; LV=LEVELS[i]; clearUnits();
+  teamM[1].main.color.set(LV.foeMain); teamM[1].accent.color.set(LV.foeAccent);
+  buildMap(LV); spawnArmy(LV);
+  gold=LV.gold; simT=0; winner=-1; paused=false; $('#bPause').textContent='Pause';
+  if(keep) for(const s of layout) place(s.type,s.x,s.z,s.st); else layout=[];
+  const small=innerHeight<560||innerWidth<700;
+  Object.assign(cam,{tx:0,tz:small?(innerWidth<innerHeight?16:24):9,yaw:0,pitch:small?1.0:.9,dist:small?(innerWidth<innerHeight?150:84):94});
+}
+function showMenu(){ state='menu'; loadLevel(Math.min(prog.unlocked,LEVELS.length-1),false); cam.dist=105; cam.pitch=.55; renderMenu(); setUI(); }
+function openStory(i){
+  loadLevel(i,false); state='story'; const L=LV;
+  $('#sT').textContent=L.title;
+  $('#sS').textContent=`${L.date} · ${L.place}`;
+  $('#sB').innerHTML='<p>'+L.intro+'</p>'+(L.unlock?'<p class="new">⚔ New in your army: '+L.unlock+'</p>':'')
+    +'<div class="tips"><b>Tips — useful troops here</b><div class="trow">'+L.troops.map(t=>'<div><img src="'+THUMB[t==='siege'?L.siege:t]+'" alt="">'+typeName(t)+'</div>').join('')+'</div><ul>'+L.tips.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>'
+    +'<p style="font-size:14px"><b>You:</b> '+L.hero+', '+L.you+' &nbsp;·&nbsp; <b>Enemy:</b> '+L.foeHero+', '+L.foe+' &nbsp;·&nbsp; <b>War chest:</b> '+L.gold+' gold</p>';
+  setUI();
+}
+function typeName(t,foe){ return t==='siege'?(LV.siege==='cannon'?'Bombard':'Catapult'):t==='hero'?(foe?LV.foeHero:LV.hero):t==='musket'&&foe?'Musketeer':TYPES[t].name; }
+function beginDeploy(){
+  state='deploy'; const L=LV;
+  $('#lvl').innerHTML=`${L.name} ${L.year}<small>${L.you} vs ${L.foe}</small>`;
+  if(!avail(selType)) selType='sword';
+  const el=$('#cards'); el.innerHTML='';
+  ORDER.filter(avail).forEach((t,i)=>{ const T=TYPES[t], c=document.createElement('button'); c.className='card'; c.dataset.t=t;
+    c.innerHTML=`<kbd>${(i+1)%10}</kbd><img src="${THUMB[t==='siege'?L.siege:t]}" alt=""><b>${typeName(t)}</b><span>${T.cost} gold</span>`;
+    c.onclick=()=>selectType(t); c.onmouseenter=()=>{ $('#info').textContent=`${typeName(t)} — ${T.desc}`; }; c.onmouseleave=()=>selectType(selType); el.appendChild(c); });
+  const cnt={}; for(const u of units) if(u.team) cnt[u.type]=(cnt[u.type]||0)+1;
+  $('#scout').innerHTML=`<h4>Scout report — ${L.foe} ▾</h4>`+ORDER.filter(t=>cnt[t]).map(t=>`<div><span>${typeName(t,1)}</span><b>${cnt[t]}</b></div>`).join('')+terrainLegend(L)+'<p class="tl"><b>Morale</b> (yellow bar) — troops run when struck from behind, outnumbered or leaderless</p>';
+  $('#scout').classList.toggle('col',innerHeight<560||innerWidth<700); $('#scout').firstElementChild.onclick=()=>$('#scout').classList.toggle('col');
+  selectType(selType); setTool('place'); refreshDeploy(); setUI();
+  document.body.style.setProperty('--barh',$('#deploy').offsetHeight+'px');
+}
+function selectType(t){ selType=t; document.querySelectorAll('.card').forEach(c=>c.classList.toggle('sel',c.dataset.t===t)); $('#info').textContent=`${typeName(t)} — ${TYPES[t].desc}`; }
+function refreshDeploy(){
+  let n=0,hasHero=false; for(const u of units) if(!u.team){ n++; if(u.type==='hero') hasHero=true; }
+  $('#gold').innerHTML=`${gold} gold<small>${n} troops deployed</small>`;
+  document.querySelectorAll('.card').forEach(c=>{ const T=TYPES[c.dataset.t]; c.classList.toggle('off',!!(gold<T.cost||(T.limit&&hasHero))); });
+}
+function startBattle(){
+  layout=units.filter(u=>!u.team).map(u=>({type:u.type,x:u.x,z:u.z,st:u.st}));
+  if(!layout.length){ $('#info').textContent='Place at least one troop inside the highlighted zone first!'; return; }
+  hp0=[0,0]; for(const u of units) hp0[u.team]+=u.hp;
+  state='battle'; simT=0; acc=0; armOrders(); setUI(); refreshBars();
+}
+function refreshBars(){
+  const hp=[0,0], n=[0,0], mo=[0,0], rt=[0,0]; for(const u of units) if(u.alive){ hp[u.team]+=u.hp; n[u.team]++; mo[u.team]+=u.rout?0:Math.max(0,u.mor); if(u.rout) rt[u.team]++; }
+  $('#barA u').style.width=(n[0]?mo[0]/n[0]:0)+'%'; $('#barB u').style.width=(n[1]?mo[1]/n[1]:0)+'%';
+  for(const tm of [0,1]) if(state==='battle'&&n[tm]>3&&rt[tm]/n[tm]>.4&&!said[tm]){ said[tm]=1; toast(tm?'The enemy line is breaking!':'Your army is breaking!'); }
+  $('#barA i').style.width=clamp(hp[0]/hp0[0]*100,0,100)+'%'; $('#barB i').style.width=clamp(hp[1]/hp0[1]*100,0,100)+'%';
+  $('#barB i').style.background='#'+new THREE.Color(LV.foeMain).getHexString();
+  $('#nA').textContent=`${LV.you} · ${n[0]}`; $('#nB').textContent=`${n[1]} · ${LV.foe}`;
+}
+let lastResult=null;
+function finish(win){
+  state='end'; winner=win?0:1; endT=0;
+  let val=0,left=0; for(const s of layout) val+=TYPES[s.type].cost; for(const u of units) if(u.alive&&!u.team) left+=u.T.cost;
+  const stars=win?(left/val>=.5?3:left/val>=.25?2:1):0;
+  lastResult={win,stars,left,val,time:simT,fled:fled.slice()};
+  if(win){ prog.stars[cur]=Math.max(prog.stars[cur]||0,stars); prog.unlocked=Math.max(prog.unlocked,Math.min(cur+1,LEVELS.length-1)); save(); }
+  if(headless) return;
+  setUI(); refreshBars(); sfx(win?'win':'lose');
+  setTimeout(()=>{ if(state!=='end') return; const L=LV;
+    $('#eT').textContent=win?'Victory!':'Defeat'; $('#eT').className=win?'':'lose';
+    $('#eStars').textContent=win?starStr(stars):'';
+    $('#eB').innerHTML=`<p>${win?L.win:L.lose}</p><div class="facts"><b>Did you know?</b><ul>${L.facts.map(f=>`<li>${f}</li>`).join('')}</ul></div>`+(win?`<p style="font-size:14px;color:#5b3a1a">Surviving army value: ${left} of ${val} gold · Battle time: ${Math.round(simT)}s · Enemy troops that fled the field: ${fled[1]}</p>`:'')+(win&&cur===LEVELS.length-1?'<p><b>You have completed all ten battles. The banner flies from Manzikert to Vienna.</b></p>':'');
+    show('#eNext',win&&cur<LEVELS.length-1); show('#end',true); },1900);
+}
+function retry(){ loadLevel(cur,true); beginDeploy(); }
+
+/* buttons */
+$('#sBack').onclick=showMenu; $('#sGo').onclick=beginDeploy;
+$('#bStart').onclick=startBattle; $('#bClear').onclick=()=>{ clearPlayer(); refreshDeploy(); }; $('#bAuto').onclick=autoDeploy;
+$('#bMenu').onclick=showMenu; $('#eMenu').onclick=showMenu; $('#bRetry').onclick=retry; $('#eRetry').onclick=retry;
+$('#eNext').onclick=()=>openStory(cur+1);
+$('#bPause').onclick=()=>{ paused=!paused; $('#bPause').textContent=paused?'Resume':'Pause'; };
+$('#bSpeed').onclick=()=>{ speed=speed===1?2:speed===2?4:1; $('#bSpeed').textContent=`Speed ${speed}×`; };
+$('#bSound').onclick=()=>{ muted=!muted; $('#bSound').textContent=muted?'Sound off':'Sound on'; };
+$('#aUnlock').onclick=()=>{ prog.unlocked=LEVELS.length-1; save(); renderMenu(); };
+$('#aReset').onclick=()=>{ prog={unlocked:0,stars:[0,0,0,0,0]}; save(); renderMenu(); };
+document.querySelectorAll('.sq').forEach(b=>b.onclick=()=>{ squad=+b.dataset.n; document.querySelectorAll('.sq').forEach(x=>x.classList.toggle('on',x===b)); });
+
+/* mouse + keyboard */
+const keys={}; let placing=false, rdrag=null;
+const setMouse=e=>{ mouse.x=e.clientX/innerWidth*2-1; mouse.y=-(e.clientY/innerHeight)*2+1; mouseOn=true; };
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+let tool='place', pinch=null, roam=false; const touches=new Map();
+function panBy(dx,dy){ const k=cam.dist/Math.max(300,innerHeight)*1.1, sy=Math.sin(cam.yaw), cy=Math.cos(cam.yaw);
+  cam.tx=clamp(cam.tx+(-cy*dx-sy*dy)*k,-80,80); cam.tz=clamp(cam.tz+(sy*dx-cy*dy)*k,-70,70); }
+const stick={L:{x:0,y:0},R:{x:0,y:0}};
+for(const id of ['L','R']){ const el=$('#stick'+id), knob=el.firstElementChild, v=stick[id]; let pid=null;
+  const set=e=>{ const b=el.getBoundingClientRect(), R=b.width/2; let x=(e.clientX-b.left-R)/R, y=(e.clientY-b.top-R)/R; const m=Math.hypot(x,y); if(m>1){ x/=m; y/=m; }
+    v.x=x; v.y=y; knob.style.transform='translate('+(x*R*.55)+'px,'+(y*R*.55)+'px)'; };
+  el.addEventListener('pointerdown',e=>{ e.preventDefault(); audioInit(); pid=e.pointerId; try{ el.setPointerCapture(pid); }catch(_){} set(e); });
+  el.addEventListener('pointermove',e=>{ if(e.pointerId===pid) set(e); });
+  const end=e=>{ if(e.pointerId!==pid) return; pid=null; v.x=v.y=0; knob.style.transform=''; };
+  el.addEventListener('pointerup',end); el.addEventListener('pointercancel',end); el.addEventListener('contextmenu',e=>e.preventDefault()); }
+document.querySelectorAll('[data-k]').forEach(b=>{ const k=b.dataset.k;
+  b.addEventListener('pointerdown',e=>{ e.preventDefault(); keys[k]=true; });
+  for(const ev of ['pointerup','pointerleave','pointercancel']) b.addEventListener(ev,()=>{ keys[k]=false; });
+  b.addEventListener('contextmenu',e=>e.preventDefault()); });
+document.querySelectorAll('.ord').forEach(b=>b.onclick=()=>{ curSt=b.dataset.st; document.querySelectorAll('.ord').forEach(x=>x.classList.toggle('on',x===b)); });
+function setTool(t){ tool=t; $('#bRemove').classList.toggle('on',t==='remove'); show('#bClear',t==='remove'); show('#bAuto',t!=='remove');
+  if(t==='remove') $('#info').textContent='Remove is on — tap troops to take them back. Tap Remove again when done.'; else if(state==='deploy') selectType(selType); }
+const ORD=['charge','hold','flank','guard'], ORDTXT={charge:'Charge — attack the nearest enemy at once',hold:'Hold — stay in place and fight only what comes close',flank:'Flank — ride wide around the side, then attack',guard:'Guard — stay back and attack enemies that come near'};
+$('#bSquad').onclick=()=>{ squad=squad===1?5:squad===5?10:1; $('#bSquad').textContent='Squad ×'+squad; $('#info').textContent='Each tap now places '+squad+(squad>1?' troops.':' troop.'); };
+$('#bOrder').onclick=()=>{ curSt=ORD[(ORD.indexOf(curSt)+1)%4]; const b=$('#bOrder'); b.textContent='Order: '+curSt[0].toUpperCase()+curSt.slice(1); b.dataset.st=curSt;
+  $('#info').textContent=ORDTXT[curSt]+'. New troops get this order; tap a placed troop to give it too.'; };
+$('#bRemove').onclick=()=>setTool(tool==='remove'?'place':'remove');
+document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
+if(MOBILE) $('#hint').innerHTML='<b>Tap</b> — place a troop<br><b>Left stick</b> — move &nbsp; <b>Right stick</b> — look around<br><b>Two fingers</b> — zoom';
+canvas.addEventListener('pointerdown',e=>{ audioInit(); setMouse(e); try{ canvas.setPointerCapture(e.pointerId); }catch(_){}
+  if(e.pointerType==='touch'){ touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(touches.size===2){ placing=false; rdrag=null; const [p,q]=[...touches.values()]; pinch={d:Math.hypot(p.x-q.x,p.y-q.y),mx:(p.x+q.x)/2,my:(p.y+q.y)/2}; return; }
+    if(touches.size>2) return; }
+  if(e.button===0){
+    if(e.pointerType==='touch') rdrag={x:e.clientX,y:e.clientY,moved:0,btn:0,tap:state==='deploy'};
+    else if(state==='deploy'&&tool!=='place') toolAtCursor();
+    else if(state==='deploy'&&tool==='place'){ placing=true; tryPlaceAtCursor(); }
+    else rdrag={x:e.clientX,y:e.clientY,moved:99,btn:0}; }
+  if(e.button===2||e.button===1) rdrag={x:e.clientX,y:e.clientY,moved:0,btn:e.button}; });
+canvas.addEventListener('pointermove',e=>{ setMouse(e);
+  if(e.pointerType==='touch'&&touches.has(e.pointerId)){ const p=touches.get(e.pointerId); p.x=e.clientX; p.y=e.clientY;
+    if(pinch&&touches.size>=2){ const [u,v]=[...touches.values()], d=Math.hypot(u.x-v.x,u.y-v.y), mx=(u.x+v.x)/2, my=(u.y+v.y)/2;
+      cam.dist=clamp(cam.dist*pinch.d/Math.max(20,d),14,190);
+      const k=cam.dist/Math.max(300,innerHeight)*1.1, sy=Math.sin(cam.yaw), cy=Math.cos(cam.yaw), dx=mx-pinch.mx, dy=my-pinch.my;
+      cam.tx=clamp(cam.tx+(-cy*dx-sy*dy)*k,-80,80); cam.tz=clamp(cam.tz+(sy*dx-cy*dy)*k,-70,70);
+      pinch={d,mx,my}; return; } }
+  if(rdrag){ const dx=e.clientX-rdrag.x, dy=e.clientY-rdrag.y; rdrag.x=e.clientX; rdrag.y=e.clientY; rdrag.moved+=Math.abs(dx)+Math.abs(dy);
+    if(rdrag.pan) panBy(dx,dy); else if(rdrag.moved>(rdrag.tap?12:5)){ cam.yaw-=dx*.006; cam.pitch=clamp(cam.pitch+dy*.005,.22,1.5); } }
+  else if(placing&&squad===1) tryPlaceAtCursor(); });
+const pointerEnd=e=>{
+  if(e.pointerType==='touch'){
+    if(e.type==='pointerup'&&rdrag&&rdrag.tap&&rdrag.moved<=12&&touches.size===1&&state==='deploy'){ setMouse(e); if(tool==='place') tryPlaceAtCursor(); else toolAtCursor(); }
+    touches.delete(e.pointerId); if(touches.size<2) pinch=null; if(!touches.size){ mouseOn=false; placing=false; rdrag=null; } return; }
+  if(e.button===0) placing=false;
+  if(rdrag&&e.button===rdrag.btn){ if(rdrag.moved<=5&&e.button===2&&state==='deploy') removeAtCursor(); rdrag=null; } };
+canvas.addEventListener('pointerup',pointerEnd); canvas.addEventListener('pointercancel',pointerEnd);
+canvas.addEventListener('pointerleave',()=>{ mouseOn=false; });
+canvas.addEventListener('wheel',e=>{ e.preventDefault(); cam.dist=clamp(cam.dist*(e.deltaY>0?1.1:.9),14,190); },{passive:false});
+addEventListener('keydown',e=>{ keys[e.code]=true;
+  if(state==='deploy'&&e.key.length===1&&e.key>='0'&&e.key<='9'){ const t=ORDER.filter(avail)[(+e.key+9)%10]; if(t) selectType(t); }
+  if(e.code==='Space'&&state==='battle'){ e.preventDefault(); $('#bPause').click(); }
+  if(e.code==='Enter'&&state==='deploy') startBattle(); });
+addEventListener('keyup',e=>{ keys[e.code]=false; });
+addEventListener('blur',()=>{ for(const k in keys) keys[k]=false; });
+
+function camUpdate(dt){
+  if(state==='menu'||state==='story') cam.yaw+=dt*.07;
+  const f=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0)-stick.L.y*.6, r=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+stick.L.x*.6;
+  cam.yaw-=stick.R.x*dt*1.6; cam.pitch=clamp(cam.pitch-stick.R.y*dt*1.1,.22,1.5);
+  const rot=(keys.KeyE?1:0)-(keys.KeyQ?1:0); cam.yaw+=rot*dt*1.4;
+  if(keys.ZoomIn) cam.dist=clamp(cam.dist*Math.exp(-dt*1.3),14,190); if(keys.ZoomOut) cam.dist=clamp(cam.dist*Math.exp(dt*1.3),14,190);
+  if(f||r){ const sp=cam.dist*.7*dt, sy=Math.sin(cam.yaw), cy=Math.cos(cam.yaw);
+    cam.tx=clamp(cam.tx+(-sy*f+cy*r)*sp,-80,80); cam.tz=clamp(cam.tz+(-cy*f-sy*r)*sp,-70,70); }
+  camApply();
+}
+
+/* main loop */
+let lastT=performance.now(), acc=0, barT=0, drumT=0, drumN=0;
+function frame(now){
+  const dt=Math.min(.1,(now-lastT)/1000); lastT=now;
+  camUpdate(dt);
+  if((state==='battle'||state==='end')&&!paused){
+    acc+=dt*speed; let n=0; while(acc>=H&&n<14){ step(H); acc-=H; n++; } if(n===14) acc=0;
+    barT-=dt; if(barT<=0&&state==='battle'){ barT=.2; refreshBars(); }
+    if(state==='battle'){ drumT-=dt*Math.min(speed,2); if(drumT<=0){ drumT=.3; if([0,2,3,6].includes(drumN++%8)) sfx('drum'); } }
+  }
+  visuals(paused?0:dt,now/1000); updateGhosts();
+  renderer.render(scene,camera);
+  requestAnimationFrame(frame);
+}
+
+/* debug / balance helper: HILAL.sim(levelIndex) runs a battle instantly with the auto-deployed army */
+window.HILAL={
+  sim(i,custom){ headless=true; loadLevel(i,false); if(custom){ for(const s of custom) place(s[0],s[1],s[2],s[3]); } else autoDeploy();
+    layout=units.filter(u=>!u.team).map(u=>({type:u.type,x:u.x,z:u.z,st:u.st})); hp0=[0,0]; for(const u of units) hp0[u.team]+=u.hp;
+    const saved=JSON.stringify(prog); state='battle'; simT=0; armOrders(); let k=0; while(state==='battle'&&k++<20000) step(H);
+    const left=[0,0]; for(const u of units) if(u.alive) left[u.team]++;
+    prog=JSON.parse(saved); save(); headless=false; const r={...lastResult,left0:left[0],left1:left[1]}; showMenu(); return r; },
+  get state(){ return state; }, get units(){ return units; }, get cam(){ return cam; }
+};
+
+/* installable app: offline cache + install button */
+try{ if('serviceWorker' in navigator&&location.protocol.startsWith('http')&&!/^(localhost|127\.)/.test(location.hostname)) navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){}
+let installEvt=null;
+addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installEvt=e; $('#aInstall').classList.remove('hide'); });
+$('#aInstall').onclick=()=>{ if(installEvt){ installEvt.prompt(); installEvt=null; $('#aInstall').classList.add('hide'); } };
+if(/iPhone|iPad|iPod/.test(navigator.userAgent)&&!navigator.standalone&&location.protocol.startsWith('http')) $('#iosTip').classList.remove('hide');
+
+makeThumbs(); resize(); showMenu(); $('#boot').remove();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
